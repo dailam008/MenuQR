@@ -129,6 +129,23 @@ export default function MenuPublicClient({ outlet, categories, menuItems }: Menu
     }
   }, [groupedMenu, selectedCategory])
 
+  // Track page view once on mount
+  useEffect(() => {
+    const trackView = async () => {
+      try {
+        await fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ outlet_id: outlet.id })
+        })
+      } catch (err) {
+        console.error('Failed to track page view', err)
+      }
+    }
+    trackView()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const scrollToCategory = (id: string | null) => {
     setSelectedCategory(id)
     const target = categoryRefs.current[id || 'lainnya']
@@ -143,6 +160,13 @@ export default function MenuPublicClient({ outlet, categories, menuItems }: Menu
     setSelectedItem(item)
     setModalOpen(true)
     document.body.style.overflow = 'hidden' // Lock scroll
+
+    // Track item view
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ outlet_id: outlet.id, menu_item_id: item.id })
+    }).catch(console.error)
   }
 
   const closeDetail = () => {
