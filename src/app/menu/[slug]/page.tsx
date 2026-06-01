@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { Outlet, Category, MenuItem } from '@/types/database'
@@ -8,49 +8,59 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
+// Simple anon client — no cookie/session overhead for public pages
+function getAnonClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
-  const { data: outletData } = await supabase
-    .from('outlets').select('name, description').eq('slug', slug).single()
-  const outlet = outletData as Pick<Outlet, 'name' | 'description'> | null
+  const supabase = getAnonClient()
+  const { data } = await supabase
+    .from('outlets')
+    .select('name, description')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single()
 
-  if (!outlet) return { title: 'Menu tidak ditemukan' }
+  if (!data) return { title: 'Menu tidak ditemukan' }
   return {
-    title: `Menu ${outlet.name}`,
-    description: outlet.description || `Lihat menu lengkap ${outlet.name} di sini.`,
+    title: `Menu ${data.name}`,
+    description: data.description || `Lihat menu lengkap ${data.name} di sini.`,
   }
 }
 
 export default async function PublicMenuPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = getAnonClient()
 
-  // Get outlet
-  const { data: outletData } = await supabase
+  // Get outlet first
+  const { data: outletData, error: outletError } = await supabase
     .from('outlets')
     .select('*')
     .eq('slug', slug)
     .eq('is_active', true)
     .single()
 
-  if (!outletData) notFound()
+  if (outletError || !outletData) notFound()
   const outlet = outletData as Outlet
 
-
-  // Get categories
-  const { data: categoriesData } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('outlet_id', outlet.id)
-    .order('sort_order')
-
-  // Get ALL menu items (both available and unavailable)
-  const { data: itemsData } = await supabase
-    .from('menu_items')
-    .select('*')
-    .eq('outlet_id', outlet.id)
-    .order('sort_order')
+  // Fetch categories and items in parallel
+  const [{ data: categoriesData }, { data: itemsData }] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('*')
+      .eq('outlet_id', outlet.id)
+      .order('sort_order'),
+    supabase
+      .from('menu_items')
+      .select('*')
+      .eq('outlet_id', outlet.id)
+      .order('sort_order'),
+  ])
 
   const allItems = (itemsData ?? []) as MenuItem[]
   const allCategories = (categoriesData ?? []) as Category[]
