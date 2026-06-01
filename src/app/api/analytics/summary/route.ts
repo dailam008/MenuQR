@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse, type NextRequest } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/analytics/summary
  * Authenticated — returns analytics and stats for the owner's outlet.

@@ -49,7 +49,7 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
   useEffect(() => {
     async function fetchAnalytics() {
       try {
-        const res = await fetch('/api/analytics/summary')
+        const res = await fetch('/api/analytics/summary', { cache: 'no-store' })
         if (!res.ok) {
           throw new Error('Gagal memuat data dari server')
         }
