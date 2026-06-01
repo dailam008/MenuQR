@@ -15,8 +15,10 @@ interface BarChartProps {
 
 export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProps) {
   const maxVal = Math.max(...data.map(d => d.value), 1)
-  const barWidth = 100 / (data.length * 2)
-  const gap = barWidth / 2
+  
+  // Total width is 100. We have data.length items.
+  const step = 100 / data.length
+  const barWidth = step * 0.4 // Bar takes 40% of the step space
 
   return (
     <svg
@@ -36,7 +38,8 @@ export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProp
 
       {data.map((d, i) => {
         const barH = (d.value / maxVal) * (height - 36)
-        const x = gap + i * (barWidth + gap) * 2
+        // Center the bar within its step
+        const x = i * step + (step - barWidth) / 2
         const y = height - 20 - barH
 
         return (
@@ -64,7 +67,7 @@ export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProp
             )}
             {/* Day label */}
             <text
-              x={x + barWidth / 2} y={height - 6}
+              x={x + barWidth / 2} y={height - 8}
               textAnchor="middle"
               fontSize="4"
               fill="#9ca3af"
