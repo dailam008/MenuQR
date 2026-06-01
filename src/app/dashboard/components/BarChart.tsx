@@ -14,16 +14,14 @@ interface BarChartProps {
 }
 
 export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProps) {
+  // Always animate immediately on mount to prevent intersection observer bugs
   const [animated, setAnimated] = useState(false)
   const ref = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setAnimated(true) },
-      { threshold: 0.3 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
+    // Slight delay for smooth entrance animation
+    const timer = setTimeout(() => setAnimated(true), 100)
+    return () => clearTimeout(timer)
   }, [])
 
   const maxVal = Math.max(...data.map(d => d.value), 1)
