@@ -14,23 +14,12 @@ interface BarChartProps {
 }
 
 export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProps) {
-  // Always animate immediately on mount to prevent intersection observer bugs
-  const [animated, setAnimated] = useState(false)
-  const ref = useRef<SVGSVGElement>(null)
-
-  useEffect(() => {
-    // Slight delay for smooth entrance animation
-    const timer = setTimeout(() => setAnimated(true), 100)
-    return () => clearTimeout(timer)
-  }, [])
-
   const maxVal = Math.max(...data.map(d => d.value), 1)
   const barWidth = 100 / (data.length * 2)
   const gap = barWidth / 2
 
   return (
     <svg
-      ref={ref}
       viewBox={`0 0 100 ${height}`}
       preserveAspectRatio="none"
       style={{ width: '100%', height }}
@@ -46,7 +35,7 @@ export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProp
       ))}
 
       {data.map((d, i) => {
-        const barH = animated ? ((d.value / maxVal) * (height - 36)) : 0
+        const barH = (d.value / maxVal) * (height - 36)
         const x = gap + i * (barWidth + gap) * 2
         const y = height - 20 - barH
 
@@ -59,9 +48,6 @@ export function BarChart({ data, color = '#f97316', height = 160 }: BarChartProp
               rx="2" ry="2"
               fill={color}
               opacity={0.85}
-              style={{
-                transition: `height 0.6s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.08}s, y 0.6s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.08}s`,
-              }}
             />
             {/* Value label */}
             {d.value > 0 && (
