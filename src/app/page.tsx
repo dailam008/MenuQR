@@ -271,7 +271,7 @@ export default function LandingPage() {
       </section>
 
       {/* ─── Features ─── */}
-      <section style={{ padding: '80px 0' }}>
+      <section id="features" style={{ padding: '80px 0' }}>
         <div className="page-container">
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
@@ -429,7 +429,7 @@ export default function LandingPage() {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section style={{ padding: '80px 0' }}>
+      <section id="faq" style={{ padding: '80px 0' }}>
         <div className="page-container">
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
