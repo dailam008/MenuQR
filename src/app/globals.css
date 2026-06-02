@@ -789,3 +789,11 @@ tbody tr:hover td {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Footer Styles */
+.footer-link:hover {
+  color: #f97316 !important;
+}
+.social-link:hover {
+  color: #ffffff !important;
+}
+

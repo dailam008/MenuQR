@@ -468,24 +468,72 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Footer ─── */}
-      <footer style={{ background: '#111827', padding: '40px 0', borderTop: '1px solid #1f2937' }}>
-        <div className="page-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <QrCode size={14} color="white" />
+      {/* ─── Premium Footer ─── */}
+      <footer style={{ background: '#0a0a0a', borderTop: '1px solid #1f2937', color: '#9ca3af' }}>
+        <div className="page-container" style={{ paddingTop: '80px', paddingBottom: '40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px', marginBottom: '64px' }}>
+            
+            {/* Brand Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', gridColumn: '1 / -1', '@media (min-width: 768px)': { gridColumn: 'span 2' } } as React.CSSProperties}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <QrCode size={16} color="white" />
+                </div>
+                <span style={{ fontSize: 20, fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+                  Menu<span style={{ color: '#f97316' }}>QR</span>
+                </span>
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '8px', maxWidth: '300px' }}>
+                Solusi menu digital QR code modern untuk UMKM Kuliner Indonesia. Kelola menu lebih mudah, cepat, dan elegan.
+              </p>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 800, color: '#ffffff' }}>
-              Menu<span style={{ color: '#f97316' }}>QR</span>
-            </span>
+
+            {/* Links Columns */}
+            <div>
+              <h4 style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px', marginBottom: '20px' }}>Produk</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <Link href="#pricing" className="footer-link">Harga</Link>
+                <Link href="#features" className="footer-link">Fitur</Link>
+                <Link href="/register" className="footer-link">Daftar Gratis</Link>
+              </div>
+            </div>
+
+            <div>
+              <h4 style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px', marginBottom: '20px' }}>Dukungan</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <a href="mailto:hello@menuqr.id" className="footer-link">Hubungi Kami</a>
+                <Link href="/#faq" className="footer-link">FAQ</Link>
+                <Link href="/register" className="footer-link">Panduan Pengguna</Link>
+              </div>
+            </div>
+
+            <div>
+              <h4 style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px', marginBottom: '20px' }}>Legal & SEO</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <a href="/sitemap.xml" className="footer-link">Sitemap</a>
+                <a href="/robots.txt" className="footer-link">Robots.txt</a>
+                <Link href="/privacy" className="footer-link">Kebijakan Privasi</Link>
+              </div>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            <a href="/sitemap.xml" style={{ fontSize: 12, color: '#6b7280', textDecoration: 'none' }}>Sitemap</a>
-            <a href="/robots.txt" style={{ fontSize: 12, color: '#6b7280', textDecoration: 'none' }}>Robots</a>
+
+          {/* Bottom Bar */}
+          <div style={{ paddingTop: '24px', borderTop: '1px solid #1f2937', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+            <p style={{ fontSize: '13px' }}>
+              © {new Date().getFullYear()} MenuQR. Dibuat dengan ❤️ untuk UMKM Indonesia.
+            </p>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <a href="#" className="social-link" aria-label="LinkedIn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              </a>
+              <a href="#" className="social-link" aria-label="Twitter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+              </a>
+              <a href="#" className="social-link" aria-label="Instagram">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+            </div>
           </div>
-          <p style={{ fontSize: 13, color: '#6b7280' }}>
-            © {new Date().getFullYear()} MenuQR. Dibuat dengan ❤️ untuk UMKM Indonesia.
-          </p>
         </div>
       </footer>
 
