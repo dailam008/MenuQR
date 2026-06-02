@@ -474,7 +474,7 @@ export default function LandingPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px', marginBottom: '64px' }}>
             
             {/* Brand Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', gridColumn: '1 / -1', '@media (min-width: 768px)': { gridColumn: 'span 2' } } as React.CSSProperties}>
+            <div className="footer-brand-column">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <QrCode size={20} color="#171717" />
                 <span style={{ fontSize: 18, fontWeight: 700, color: '#171717', letterSpacing: '-0.02em' }}>

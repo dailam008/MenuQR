@@ -816,3 +816,17 @@ tbody tr:hover td {
   color: #000000;
 }
 
+
+.footer-brand-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .footer-brand-column {
+    grid-column: span 2;
+  }
+}
+
