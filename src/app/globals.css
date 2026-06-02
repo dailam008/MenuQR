@@ -797,3 +797,22 @@ tbody tr:hover td {
   color: #ffffff !important;
 }
 
+
+/* Elegant Footer Styles */
+.footer-link-elegant {
+  font-size: 14px;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-link-elegant:hover {
+  color: #000000;
+}
+.social-link-elegant {
+  color: #888888;
+  transition: color 0.2s ease;
+}
+.social-link-elegant:hover {
+  color: #000000;
+}
+
