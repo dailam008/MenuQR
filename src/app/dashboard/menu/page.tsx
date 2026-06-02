@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react'
 import MenuClientPage from './MenuClientPage'
 import type { Metadata } from 'next'
 import type { Category, MenuItem } from '@/types/database'
+import { getActiveOutlet } from '@/lib/supabase/outlet'
 
 export const metadata: Metadata = { title: 'Menu Saya' }
 
@@ -16,8 +17,8 @@ export default async function MenuPage() {
   if (!user) redirect('/login')
   const authUser = user!
 
-  const { data: outlet } = await supabase
-    .from('outlets').select('*').eq('owner_id', authUser.id).single()
+  const { activeOutlet: outlet } = await getActiveOutlet(supabase, authUser)
+
 
   if (!outlet) {
     return (

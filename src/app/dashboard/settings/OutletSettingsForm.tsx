@@ -85,13 +85,34 @@ export default function OutletSettingsForm({ outlet, userId }: Props) {
         }
         ;({ error: err } = await supabase.from('outlets').update(updatePayload).eq('id', outlet.id))
       } else {
-        ;({ error: err } = await supabase.from('outlets').insert({ ...basePayload, is_active: true }))
+        const { data: inserted, error: insertErr } = await supabase
+          .from('outlets')
+          .insert({ ...basePayload, is_active: true })
+          .select('id')
+          .single()
+        err = insertErr
+
+        if (!err && inserted) {
+          // Switch active outlet to the new one
+          await fetch('/api/outlets/switch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: inserted.id })
+          })
+        }
       }
 
       if (err) throw new Error(err.message)
 
       setSuccess(true)
       router.refresh()
+
+      if (!outlet) {
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 1500)
+      }
+
     } catch (e: unknown) {
       setError((e as Error).message || 'Terjadi kesalahan.')
     } finally {

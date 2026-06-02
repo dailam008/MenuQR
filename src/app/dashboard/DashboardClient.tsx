@@ -27,7 +27,7 @@ interface AnalyticsData {
     menu_count: number
     available_count: number
     category_count: number
-    outlet_active: boolean
+    outlet_count: number
   }
   views_per_day: { date: string; label: string; count: number }[]
   top_menus: {
@@ -72,7 +72,7 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
     { label: 'Total Menu', key: 'menu_count' as const, icon: UtensilsCrossed, color: '#f97316', bg: '#fff7ed' },
     { label: 'Menu Tersedia', key: 'available_count' as const, icon: TrendingUp, color: '#16a34a', bg: '#f0fdf4' },
     { label: 'Kategori', key: 'category_count' as const, icon: Tag, color: '#8b5cf6', bg: '#f5f3ff' },
-    { label: 'Outlet Aktif', key: 'outlet_active' as const, icon: QrCode, color: '#06b6d4', bg: '#ecfeff' },
+    { label: 'Total Outlet', key: 'outlet_count' as const, icon: QrCode, color: '#06b6d4', bg: '#ecfeff' },
   ]
 
   const hasScanData = data && data.views_per_day.some(d => d.count > 0)
@@ -104,7 +104,7 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
       {/* Stats Grid */}
       <div className="stats-grid stagger" style={{ marginBottom: 28 }}>
         {statsDef.map(s => {
-          const val = data ? (s.key === 'outlet_active' ? (data.stats[s.key] ? 1 : 0) : data.stats[s.key]) : null
+          const val = data ? data.stats[s.key] : null
           return (
             <div key={s.label} className="stat-card animate-fade-in">
               <div className="stat-icon" style={{ background: s.bg }}><s.icon size={20} color={s.color} /></div>

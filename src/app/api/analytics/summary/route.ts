@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getActiveOutlet } from '@/lib/supabase/outlet'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -12,11 +13,8 @@ export async function GET(_req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: outlet } = await supabase
-    .from('outlets')
-    .select('*')
-    .eq('owner_id', user.id)
-    .single()
+  const { activeOutlet: outlet } = await getActiveOutlet(supabase, user)
+
 
   if (!outlet) {
     return NextResponse.json({
@@ -25,7 +23,7 @@ export async function GET(_req: NextRequest) {
         menu_count: 0,
         available_count: 0,
         category_count: 0,
-        outlet_active: false
+        outlet_count: 0
       },
       views_per_day: [],
       top_menus: []
@@ -33,10 +31,11 @@ export async function GET(_req: NextRequest) {
   }
 
   // Fetch Stats
-  const [{ count: menuCount }, { count: availableCount }, { count: categoryCount }] = await Promise.all([
+  const [{ count: menuCount }, { count: availableCount }, { count: categoryCount }, { count: outletCount }] = await Promise.all([
     supabase.from('menu_items').select('*', { count: 'exact', head: true }).eq('outlet_id', outlet.id),
     supabase.from('menu_items').select('*', { count: 'exact', head: true }).eq('outlet_id', outlet.id).eq('is_available', true),
     supabase.from('categories').select('*', { count: 'exact', head: true }).eq('outlet_id', outlet.id),
+    supabase.from('outlets').select('*', { count: 'exact', head: true }).eq('owner_id', user.id),
   ])
 
   // Build last-7-days date range
@@ -118,7 +117,7 @@ export async function GET(_req: NextRequest) {
       menu_count: menuCount ?? 0,
       available_count: availableCount ?? 0,
       category_count: categoryCount ?? 0,
-      outlet_active: outlet ? true : false,
+      outlet_count: outletCount ?? 0,
     },
     views_per_day,
     top_menus,

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getActiveOutlet } from '@/lib/supabase/outlet'
 import { NextResponse, type NextRequest } from 'next/server'
 import sharp from 'sharp'
 import crypto from 'crypto'
@@ -17,15 +18,12 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Fetch active outlet for this owner to isolate paths
-    const { data: outlet } = await supabase
-      .from('outlets')
-      .select('id')
-      .eq('owner_id', user.id)
-      .single()
+    const { activeOutlet: outlet } = await getActiveOutlet(supabase, user)
 
     if (!outlet) {
       return NextResponse.json({ error: 'Outlet tidak ditemukan. Silakan buat outlet terlebih dahulu.' }, { status: 400 })
     }
+
 
     // 3. Extract form data
     const formData = await req.formData()

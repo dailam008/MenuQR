@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import MenuItemForm from '../../MenuItemForm'
 import type { Metadata } from 'next'
 import type { Category, MenuItem } from '@/types/database'
+import { getActiveOutlet } from '@/lib/supabase/outlet'
 
 export const metadata: Metadata = { title: 'Edit Menu' }
 
@@ -13,9 +14,9 @@ export default async function EditMenuItemPage({ params }: { params: Promise<{ i
   if (!user) redirect('/login')
   const authUser = user!
 
-  const { data: outlet } = await supabase
-    .from('outlets').select('*').eq('owner_id', authUser.id).single()
+  const { activeOutlet: outlet } = await getActiveOutlet(supabase, authUser)
   if (!outlet) redirect('/dashboard/settings')
+
 
   const { data: itemData } = await supabase
     .from('menu_items').select('*').eq('id', id).eq('outlet_id', outlet.id).single()

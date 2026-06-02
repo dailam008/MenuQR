@@ -4,6 +4,7 @@ import QRCodeDisplay from './QRCodeDisplay'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Outlet } from '@/types/database'
+import { getActiveOutlet } from '@/lib/supabase/outlet'
 
 export const metadata: Metadata = { title: 'QR Code Outlet' }
 
@@ -13,10 +14,9 @@ export default async function QRPage() {
   if (!user) redirect('/login')
   const authUser = user!
 
-  const { data: outletData } = await supabase
-    .from('outlets').select('*').eq('owner_id', authUser.id).single()
+  const { activeOutlet: outlet } = await getActiveOutlet(supabase, authUser)
 
-  if (!outletData) {
+  if (!outlet) {
     return (
       <div className="animate-fade-in">
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 24 }}>QR Code</h1>
@@ -28,7 +28,6 @@ export default async function QRPage() {
     )
   }
 
-  const outlet = outletData as Outlet
 
   return (
     <div className="animate-fade-in">
