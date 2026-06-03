@@ -400,7 +400,7 @@ export default function LandingPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
             {[
               { name: 'Gratis', price: 'Rp 0', period: '/bulan', highlight: false, features: ['1 outlet', 'Hingga 50 item menu', 'QR Code basic', 'Halaman menu publik'] },
-              { name: 'Pro', price: 'Rp 49.000', period: '/bulan', highlight: true, features: ['Unlimited outlet', 'Unlimited menu item', 'Custom domain', 'Analitik menu', 'Prioritas support'] },
+              { name: 'Pro', price: 'Rp 49.000', period: '/bulan', highlight: true, features: ['Hingga 5 outlet', 'Unlimited menu item', 'Custom domain', 'Analitik menu', 'Prioritas support'] },
             ].map(plan => (
               <div key={plan.name} className="card" style={{ padding: 28, border: plan.highlight ? '2px solid #f97316' : '1px solid #e5e7eb', position: 'relative', overflow: 'hidden' }}>
                 {plan.highlight && (
