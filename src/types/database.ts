@@ -18,6 +18,7 @@ export type Database = {
           address: string | null
           description: string | null
           logo_url: string | null
+          custom_domain: string | null
           is_active: boolean
           created_at: string
           updated_at: string
@@ -30,6 +31,7 @@ export type Database = {
           address?: string | null
           description?: string | null
           logo_url?: string | null
+          custom_domain?: string | null
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -42,6 +44,7 @@ export type Database = {
           address?: string | null
           description?: string | null
           logo_url?: string | null
+          custom_domain?: string | null
           is_active?: boolean
           updated_at?: string
         }

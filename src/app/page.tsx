@@ -79,23 +79,27 @@ export default function LandingPage() {
 
       {/* ─── Navbar ─── */}
       <nav style={{
-        position: 'sticky', top: 0, zIndex: 50,
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
         background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(12px)',
         borderBottom: '1px solid #f3f4f6',
       }}>
         <div className="page-container" style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <QrCode size={20} color="white" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <QrCode size={18} color="white" />
             </div>
-            <span style={{ fontSize: 20, fontWeight: 800, color: '#111827' }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
               Menu<span style={{ color: '#f97316' }}>QR</span>
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Link href="/login" className="btn btn-secondary btn-sm">Masuk</Link>
-            <Link href="/register" className="btn btn-primary btn-sm">Daftar Gratis</Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Link href="/login" className="btn btn-secondary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>Masuk</Link>
+            <Link href="/register" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
+              Daftar<span className="hidden sm:inline"> Gratis</span>
+            </Link>
           </div>
         </div>
       </nav>
@@ -103,38 +107,37 @@ export default function LandingPage() {
       {/* ─── Hero ─── */}
       <section style={{
         background: 'linear-gradient(160deg, #fff7ed 0%, #fffbf7 40%, #ffffff 100%)',
-        padding: '80px 0 100px',
+        padding: '50px 0 60px',
         overflow: 'hidden',
         position: 'relative',
       }}>
         {/* Decorative blobs */}
-        <div style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.14) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: '40%', left: '10%', width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle, rgba(6,182,212,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div className="hidden sm:block" style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.14) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div className="hidden sm:block" style={{ position: 'absolute', bottom: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
         <div className="page-container" style={{ textAlign: 'center', position: 'relative' }}>
           {/* Badge */}
           <div className="animate-fade-in" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             background: '#fff7ed', border: '1px solid #fed7aa',
-            borderRadius: 999, padding: '6px 14px',
-            fontSize: 13, fontWeight: 600, color: '#ea6c0a',
-            marginBottom: 28,
+            borderRadius: 999, padding: '5px 12px',
+            fontSize: 12, fontWeight: 600, color: '#ea6c0a',
+            marginBottom: 20,
           }}>
-            <Zap size={13} />
+            <Zap size={12} />
             Gratis selamanya untuk 1 outlet
           </div>
 
           {/* Heading with stagger animation */}
           <h1 className="animate-fade-in" style={{
-            fontSize: 'clamp(36px, 5vw, 64px)',
+            fontSize: 'clamp(28px, 6vw, 56px)',
             fontWeight: 800,
             color: '#111827',
-            lineHeight: 1.15,
+            lineHeight: 1.2,
             letterSpacing: '-0.02em',
-            marginBottom: 20,
+            marginBottom: 16,
             maxWidth: 720,
-            margin: '0 auto 20px',
+            margin: '0 auto 16px',
             animationDelay: '0.1s',
           }}>
             Menu Digital Modern<br />
@@ -147,30 +150,27 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className="animate-fade-in" style={{
-            fontSize: 18, color: '#6b7280', maxWidth: 560,
-            margin: '0 auto 40px', lineHeight: 1.7,
+          <p className="animate-fade-in px-2" style={{
+            fontSize: 'clamp(14px, 4vw, 17px)', color: '#6b7280', maxWidth: 540,
+            margin: '0 auto 32px', lineHeight: 1.6,
             animationDelay: '0.2s',
           }}>
             Buat QR code menu digital dalam 5 menit. Pelanggan scan, langsung lihat menu cantik di HP mereka — tanpa install app apapun.
           </p>
 
           {/* CTA Buttons */}
-          <div className="animate-fade-in" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', animationDelay: '0.3s' }}>
-            <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg">
+          <div className="animate-fade-in flex flex-col sm:flex-row gap-3 justify-center px-4" style={{ animationDelay: '0.3s', maxWidth: 420, margin: '0 auto' }}>
+            <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
               Mulai Gratis Sekarang
               <ArrowRight size={18} />
             </Link>
-            <Link href="/login" className="btn btn-secondary btn-lg">
-              Sudah punya akun? Masuk
+            <Link href="/login" className="btn btn-secondary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
+              Masuk ke Dashboard
             </Link>
           </div>
 
           {/* Trust Badges */}
-          <div className="animate-fade-in" style={{
-            display: 'flex', gap: 24, justifyContent: 'center',
-            flexWrap: 'wrap', marginTop: 24, animationDelay: '0.4s',
-          }}>
+          <div className="animate-fade-in flex flex-wrap gap-x-6 gap-y-2 justify-center mt-6" style={{ animationDelay: '0.4s' }}>
             {trustBadges.map(badge => (
               <div key={badge.text} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#6b7280' }}>
                 <span>{badge.icon}</span>
@@ -179,8 +179,8 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Hero Mockup with floating animation */}
-          <div className="hero-float animate-fade-in" style={{
+          {/* Hero Mockup with floating animation (Hidden on mobile) */}
+          <div className="hero-float animate-fade-in hidden md:block" style={{
             marginTop: 60,
             background: '#ffffff',
             borderRadius: 20,
@@ -248,7 +248,7 @@ export default function LandingPage() {
       {/* ─── Social Proof Counter ─── */}
       <section style={{ padding: '32px 0', borderTop: '1px solid #f3f4f6', borderBottom: '1px solid #f3f4f6', background: '#fafafa' }}>
         <div className="page-container">
-          <div style={{ display: 'flex', gap: 48, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="flex flex-col md:flex-row gap-6 md:gap-12 justify-center items-center">
             {[
               { value: 500, suffix: '+', label: 'Warung Aktif' },
               { value: 12000, suffix: '+', label: 'Item Menu' },

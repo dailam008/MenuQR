@@ -8,6 +8,8 @@ import { formatRupiah, parseMenuImage } from '@/lib/utils'
 import { ToastContainer, useToast } from '../components/Toast'
 import type { Category, MenuItem } from '@/types/database'
 import { deleteMenuImageStorage } from '@/lib/supabase/storage'
+import { usePlanLimit } from '@/hooks/usePlanLimit'
+import UpgradeWall from '../components/UpgradeWall'
 
 type MenuItemWithCategory = MenuItem & { categories: { name: string } | null }
 
@@ -65,6 +67,8 @@ function DeleteConfirm({ count, names, onConfirm, onCancel }: DeleteConfirmProps
 }
 
 export default function MenuClientPage({ items: initialItems, categories, outletId }: Props) {
+  const planLimit = usePlanLimit()
+  const [wallOpen, setWallOpen] = useState(false)
   const [items, setItems] = useState(initialItems)
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('')
@@ -169,10 +173,25 @@ export default function MenuClientPage({ items: initialItems, categories, outlet
               {selected.size > 0 && <span style={{ color: '#f97316', fontWeight: 600 }}> · {selected.size} dipilih</span>}
             </p>
           </div>
-          <Link href="/dashboard/menu/new" className="btn btn-primary">
-            <Plus size={16} /> Tambah Menu
-          </Link>
+          {planLimit.canAddMenu ? (
+            <Link href="/dashboard/menu/new" className="btn btn-primary">
+              <Plus size={16} /> Tambah Menu
+            </Link>
+          ) : (
+            <button onClick={() => setWallOpen(true)} className="btn btn-primary" style={{ cursor: 'pointer' }}>
+              <Plus size={16} /> Tambah Menu
+            </button>
+          )}
         </div>
+
+        {wallOpen && (
+          <UpgradeWall
+            feature="menu_item"
+            isModal
+            isOpen={wallOpen}
+            onClose={() => setWallOpen(false)}
+          />
+        )}
 
         {/* Search & Filter */}
         <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -245,7 +264,8 @@ export default function MenuClientPage({ items: initialItems, categories, outlet
             )}
           </div>
         ) : (
-          <div className="table-wrapper">
+          <>
+            <div className="table-wrapper hidden md:block">
             <table>
               <thead>
                 <tr>
@@ -327,6 +347,100 @@ export default function MenuClientPage({ items: initialItems, categories, outlet
               </tbody>
             </table>
           </div>
+
+          {/* Card list for mobile/tablet */}
+          <div className="md:hidden space-y-3">
+            {/* Mobile Select All Helper */}
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 8, paddingLeft: 4 }}>
+              <button
+                onClick={toggleSelectAll}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5,
+                  fontWeight: 600, color: '#6b7280'
+                }}
+              >
+                {allSelected ? <CheckSquare size={16} color="#f97316" /> : <Square size={16} color="#d1d5db" />}
+                Pilih Semua Menu
+              </button>
+            </div>
+
+            {filtered.map(item => (
+              <div
+                key={item.id}
+                className="card animate-fade-in animate-slide-in"
+                style={{
+                  padding: 14,
+                  background: selected.has(item.id) ? '#fff7ed' : '#ffffff',
+                  border: selected.has(item.id) ? '1.5px solid #fdba74' : '1px solid #e5e7eb',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10
+                }}
+              >
+                <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <button
+                    onClick={() => toggleSelect(item.id)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, marginTop: 2 }}
+                  >
+                    {selected.has(item.id) ? <CheckSquare size={16} color="#f97316" /> : <Square size={16} color="#d1d5db" />}
+                  </button>
+
+                  <div style={{ width: 52, height: 52, borderRadius: 8, background: item.image_url ? 'transparent' : '#f3f4f6', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {(() => {
+                      const parsedImage = parseMenuImage(item.image_url)
+                      return parsedImage ? (
+                        <img src={parsedImage.thumbnail} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ fontSize: 20 }}>🍽️</span>
+                      )
+                    })()}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, color: '#111827', fontSize: 14.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
+                      <span style={{ fontWeight: 700, color: '#f97316', fontSize: 13.5 }}>{formatRupiah(item.price)}</span>
+                      {item.categories?.name && (
+                        <span className="badge badge-gray" style={{ fontSize: 9.5, padding: '1px 6px' }}>{item.categories.name}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {item.description && (
+                  <p style={{ fontSize: 12.5, color: '#6b7280', margin: '0 0 0 26px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.4 }}>
+                    {item.description}
+                  </p>
+                )}
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f3f4f6', paddingTop: 8, paddingLeft: 26 }}>
+                  <button
+                    onClick={() => handleToggleStatus(item.id, item.is_available)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                  >
+                    <span className={`badge ${item.is_available ? 'badge-green' : 'badge-red'}`} style={{ fontSize: 10.5, padding: '2px 8px' }}>
+                      {item.is_available ? '✓ Tersedia' : '✕ Habis'}
+                    </span>
+                  </button>
+
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <Link href={`/dashboard/menu/${item.id}/edit`} className="btn btn-secondary btn-sm" style={{ padding: '4px 10px', fontSize: 12 }}>
+                      <Edit2 size={12} /> Edit
+                    </Link>
+                    <button
+                      onClick={() => setDeleteTarget([item.id])}
+                      className="btn btn-sm"
+                      style={{ padding: '4px 10px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontSize: 12 }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
     </>

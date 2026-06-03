@@ -155,7 +155,7 @@ export default function MenuItemForm({ outletId, categories, existingItem }: Pro
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, maxWidth: 800 }}>
+      <div style={{ gap: 20, maxWidth: 800 }} className="grid grid-cols-1 md:grid-cols-2">
         {/* Left: Form fields */}
         <div className="card" style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 20 }}>
           {success && (

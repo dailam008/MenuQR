@@ -54,7 +54,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="card" style={{ padding: '36px 32px' }}>
+        <div className="card p-6 sm:p-8">
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 6 }}>Selamat datang kembali</h1>
           <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28 }}>Masuk ke dashboard untuk kelola menu Anda.</p>
 

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import OutletSettingsForm from '../OutletSettingsForm'
+import UpgradeWall from '../../components/UpgradeWall'
 import LimitBlocker from '../../components/LimitBlocker'
 import { getActiveOutlet } from '@/lib/supabase/outlet'
 import type { Metadata } from 'next'
@@ -19,7 +20,7 @@ export default async function NewOutletPage() {
     return (
       <div className="animate-fade-in">
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 24 }}>Tambah Outlet Baru</h1>
-        <LimitBlocker limitType="free" currentCount={outlets.length} />
+        <UpgradeWall feature="outlet" />
       </div>
     )
   }

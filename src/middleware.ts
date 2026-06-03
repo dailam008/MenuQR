@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isProExpired } from './lib/plan-gate'
 
 // Edge-compatible in-memory store for rate limiting
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
@@ -22,7 +23,7 @@ function isRateLimited(ip: string, limit: number, windowMs: number, routeKey: st
   return false
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1'
   const { pathname } = request.nextUrl
 
@@ -87,6 +88,15 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  if (user) {
+    // Dynamically check if the user's Pro plan has expired on every authenticated page request
+    try {
+      await isProExpired(supabase, user.id)
+    } catch (e) {
+      console.error('Middleware plan expiry validation failed:', e)
+    }
+  }
+
   // Protect dashboard routes
   if (pathname.startsWith('/dashboard') && !user) {
     const url = request.nextUrl.clone()
@@ -104,7 +114,7 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse
 }
 
-export default proxy
+export default middleware
 
 export const config = {
   matcher: [

@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '24px',
       }}>
-        <div className="animate-fade-in card" style={{ padding: '48px 40px', maxWidth: 440, width: '100%', textAlign: 'center' }}>
+        <div className="animate-fade-in card p-6 sm:p-10 w-full max-w-[440px]" style={{ textAlign: 'center' }}>
           <div style={{ width: 64, height: 64, borderRadius: 20, background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <CheckCircle2 size={32} color="#16a34a" />
           </div>
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
           </Link>
         </div>
 
-        <div className="card" style={{ padding: '36px 32px' }}>
+        <div className="card p-6 sm:p-8">
           <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', marginBottom: 6 }}>Lupa password?</h1>
           <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28 }}>
             Masukkan email Anda dan kami akan kirimkan link untuk reset password.

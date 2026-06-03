@@ -131,14 +131,14 @@ export default function QRCodeDisplay({ outlet }: Props) {
   const tc = templateColors[template]
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 24, maxWidth: 820, alignItems: 'start' }}>
+    <div style={{ gap: 24, maxWidth: 820 }} className="grid grid-cols-1 md:grid-cols-[auto_1fr] items-start">
 
       {/* QR Card */}
-      <div className="card" style={{ padding: 28, textAlign: 'center', width: 340 }}>
+      <div className="card w-full max-w-[340px] mx-auto md:mx-0" style={{ padding: 20, textAlign: 'center' }}>
         {/* Header */}
         <div style={{
           background: tc.header, border: `1px solid ${tc.border}`,
-          borderRadius: 14, padding: '14px 20px', marginBottom: 20,
+          borderRadius: 14, padding: '12px 16px', marginBottom: 16,
           display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center',
         }}>
           <QrCode size={18} color={template === 'classic' ? '#f97316' : template === 'minimalis' ? '#111827' : 'white'} />
@@ -149,11 +149,11 @@ export default function QRCodeDisplay({ outlet }: Props) {
 
         {/* QR with hover overlay */}
         <div
-          style={{ position: 'relative', display: 'inline-block', cursor: 'crosshair' }}
+          style={{ position: 'relative', display: 'inline-block', cursor: 'crosshair', maxWidth: '100%' }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          <canvas ref={canvasRef} style={{ borderRadius: 12, border: '1px solid #e5e7eb', display: 'block' }} />
+          <canvas ref={canvasRef} style={{ borderRadius: 12, border: '1px solid #e5e7eb', display: 'block', maxWidth: '100%', height: 'auto' }} />
           {hover && (
             <div style={{
               position: 'absolute', inset: 0, borderRadius: 12,
@@ -168,18 +168,18 @@ export default function QRCodeDisplay({ outlet }: Props) {
           )}
         </div>
 
-        <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 12, marginBottom: 20 }}>
+        <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 10, marginBottom: 16 }}>
           Hover QR untuk instruksi scan
         </p>
 
         {/* Template Picker */}
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 16 }}>
+        <div className="flex flex-wrap gap-2 justify-center" style={{ marginBottom: 16 }}>
           {templates.map(t => (
             <button
               key={t.id}
               onClick={() => setTemplate(t.id)}
               style={{
-                padding: '6px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                padding: '5px 10px', borderRadius: 8, fontSize: 11.5, fontWeight: 600, cursor: 'pointer',
                 background: template === t.id ? '#f97316' : '#f9fafb',
                 color: template === t.id ? 'white' : '#6b7280',
                 border: `1.5px solid ${template === t.id ? '#f97316' : '#e5e7eb'}`,
@@ -192,11 +192,11 @@ export default function QRCodeDisplay({ outlet }: Props) {
         </div>
 
         {/* Download */}
-        <button id="btn-download-qr" onClick={downloadQR} className="btn btn-primary" style={{ width: '100%', marginBottom: 8 }}>
-          <Download size={16} /> Download {template.charAt(0).toUpperCase() + template.slice(1)} (1000px)
+        <button id="btn-download-qr" onClick={downloadQR} className="btn btn-primary btn-sm" style={{ width: '100%', marginBottom: 8, padding: '10px' }}>
+          <Download size={15} /> Download {template.charAt(0).toUpperCase() + template.slice(1)} (1000px)
         </button>
-        <a id="btn-open-menu" href={menuUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ width: '100%' }}>
-          <ExternalLink size={16} /> Buka Halaman Menu
+        <a id="btn-open-menu" href={menuUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm" style={{ width: '100%', padding: '10px' }}>
+          <ExternalLink size={15} /> Buka Halaman Menu
         </a>
       </div>
 

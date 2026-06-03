@@ -75,22 +75,22 @@ export default function BillingModal({ isOpen, onClose, isPro, onPlanUpdated }: 
     <div style={{
       position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 9999, backdropFilter: 'blur(4px)', padding: 16
+      zIndex: 9999, backdropFilter: 'blur(4px)', padding: 12
     }}>
       <div className="animate-fade-in card" style={{
         maxWidth: 550, width: '100%', padding: 0, overflow: 'hidden',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid #e2e8f0',
-        background: 'white', borderRadius: 20
+        background: 'white', borderRadius: 20, maxHeight: '90vh', display: 'flex', flexDirection: 'column'
       }}>
         {/* Header */}
         <div style={{
-          padding: '20px 24px', borderBottom: '1px solid #f1f5f9',
+          padding: '16px 20px', borderBottom: '1px solid #f1f5f9',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          background: 'linear-gradient(to right, #fff7ed, #ffffff)'
+          background: 'linear-gradient(to right, #fff7ed, #ffffff)', flexShrink: 0
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Award size={20} color="#f97316" />
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1e293b', margin: 0 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1e293b', margin: 0 }}>
               {isPro ? 'Informasi Langganan Anda' : 'Upgrade ke MenuQR PRO ⚡'}
             </h2>
           </div>
@@ -103,7 +103,7 @@ export default function BillingModal({ isOpen, onClose, isPro, onPlanUpdated }: 
         </div>
 
         {/* Content Wrapper */}
-        <div style={{ padding: 24 }}>
+        <div style={{ padding: '20px 16px', overflowY: 'auto', flex: 1 }}>
           {error && (
             <div style={{
               background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 12,

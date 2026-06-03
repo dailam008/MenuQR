@@ -3,7 +3,13 @@ import type { Outlet } from '@/types/database'
 
 export async function getActiveOutlet(supabase: SupabaseClient, user: User) {
   const activeId = user.user_metadata?.active_outlet_id
-  const isPro = user.user_metadata?.is_pro === true
+  // Query actual plan status from public.users table as source of truth
+  const { data: userData } = await supabase
+    .from('users')
+    .select('plan')
+    .eq('id', user.id)
+    .maybeSingle()
+  const isPro = userData?.plan === 'pro'
 
   // Fetch all outlets owned by this user
   const { data: allOutlets } = await supabase
