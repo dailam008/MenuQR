@@ -89,7 +89,7 @@ Mohon aktivasi akun saya. Terima kasih!`
           <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', marginBottom: 8 }}>
             Upgrade ke Menu<span style={{ color: '#f97316' }}>QR</span> Pro ⚡
           </h1>
-          <p style={{ color: '#64748b', fontSize: '15px', maxW: '500px', margin: '0 auto', lineHeight: 1.5 }}>
+          <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '500px', margin: '0 auto', lineHeight: 1.5 }}>
             Pilih paket terbaik untuk warung Anda. Dapatkan akses fitur lengkap dan tingkatkan pelayanan pelanggan Anda.
           </p>
         </div>
