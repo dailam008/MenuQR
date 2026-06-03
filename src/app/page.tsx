@@ -399,8 +399,35 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
             {[
-              { name: 'Gratis', price: 'Rp 0', period: '/bulan', highlight: false, features: ['1 outlet', 'Hingga 50 item menu', 'QR Code basic', 'Halaman menu publik'] },
-              { name: 'Pro', price: 'Rp 49.000', period: '/bulan', highlight: true, features: ['Hingga 5 outlet', 'Unlimited menu item', 'QR Code premium kustom', 'Custom domain', 'Analitik menu', 'Prioritas support'] },
+              { 
+                name: 'Gratis', 
+                price: 'Rp 0', 
+                period: '/selamanya', 
+                highlight: false, 
+                features: [
+                  '1 outlet cabang aktif',
+                  'Maksimal 50 item menu makanan/minuman',
+                  'Desain QR Code standar (Minimalis)',
+                  'Halaman menu publik aktif & responsif'
+                ] 
+              },
+              { 
+                name: 'Pro', 
+                price: 'Rp 49.000', 
+                period: '/bulan', 
+                highlight: true, 
+                features: [
+                  'Kelola hingga 5 outlet cabang aktif',
+                  'Upload menu makanan & minuman tanpa batas',
+                  'Desain QR Code premium (Colorful & Classic)',
+                  'Download file QR resolusi tinggi (1000px)',
+                  'Halaman menu publik aktif',
+                  'Domain kustom (misal: menu.warunganda.com)',
+                  'Grafik analitik pengunjung & performa menu',
+                  'Prioritas bantuan teknis langsung admin',
+                  'Integrasi WhatsApp Share instan'
+                ] 
+              },
             ].map(plan => (
               <div key={plan.name} className="card" style={{ padding: 28, border: plan.highlight ? '2px solid #f97316' : '1px solid #e5e7eb', position: 'relative', overflow: 'hidden' }}>
                 {plan.highlight && (
