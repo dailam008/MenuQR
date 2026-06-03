@@ -137,6 +137,100 @@ export type Database = {
           }
         ]
       }
+      users: {
+        Row: {
+          id: string
+          email: string | null
+          plan: 'free' | 'pro'
+          pro_started_at: string | null
+          pro_expired_at: string | null
+          payment_ref: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email?: string | null
+          plan?: 'free' | 'pro'
+          pro_started_at?: string | null
+          pro_expired_at?: string | null
+          payment_ref?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string | null
+          plan?: 'free' | 'pro'
+          pro_started_at?: string | null
+          pro_expired_at?: string | null
+          payment_ref?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      upgrade_logs: {
+        Row: {
+          id: string
+          user_id: string
+          notified_at: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          notified_at?: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          notified_at?: string
+          status?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'upgrade_logs_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      cron_logs: {
+        Row: {
+          id: string
+          run_at: string
+          cron_name: string
+          users_affected: number
+          status: string
+          log_message: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          run_at?: string
+          cron_name: string
+          users_affected?: number
+          status: string
+          log_message?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          run_at?: string
+          cron_name?: string
+          users_affected?: number
+          status?: string
+          log_message?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
