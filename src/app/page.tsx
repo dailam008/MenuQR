@@ -438,11 +438,11 @@ export default function LandingPage() {
                   <span style={{ fontSize: 32, fontWeight: 800, color: '#111827' }}>{plan.price}</span>
                   <span style={{ fontSize: 14, color: '#9ca3af' }}>{plan.period}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24, flex: 1 }}>
                   {plan.features.map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <CheckCircle2 size={16} color="#16a34a" />
-                      <span style={{ fontSize: 14, color: '#374151' }}>{f}</span>
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                      <CheckCircle2 size={16} color="#16a34a" style={{ flexShrink: 0, marginTop: 2 }} />
+                      <span style={{ fontSize: 13.5, color: '#374151', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
