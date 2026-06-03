@@ -4,7 +4,7 @@ import { Lock, Sparkles, Check, X } from 'lucide-react'
 import Link from 'next/link'
 
 interface UpgradeWallProps {
-  feature: 'outlet' | 'menu_item' | 'custom_domain' | 'analytics'
+  feature: 'outlet' | 'menu_item' | 'custom_domain' | 'analytics' | 'premium_qr'
   isModal?: boolean
   isOpen?: boolean
   onClose?: () => void
@@ -17,7 +17,8 @@ export default function UpgradeWall({ feature, isModal = false, isOpen = true, o
     outlet: 'Batas pembuatan outlet pada plan Gratis Anda telah tercapai. Upgrade ke Pro untuk mengelola hingga 5 outlet cabang aktif.',
     menu_item: 'Batas maksimal 50 menu item pada plan Gratis Anda telah tercapai. Upgrade ke Pro untuk menambahkan menu item sepuasnya tanpa batas.',
     custom_domain: 'Gunakan alamat website kustom Anda sendiri (misal: menu.warunganda.com) agar identitas warung Anda terlihat premium dan profesional.',
-    analytics: 'Akses analitik lengkap statistik pengunjung, performa scan QR harian, dan item menu makanan/minuman yang paling sering dilihat pelanggan.'
+    analytics: 'Akses analitik lengkap statistik pengunjung, performa scan QR harian, dan item menu makanan/minuman yang paling sering dilihat pelanggan.',
+    premium_qr: 'Akses template stiker QR Code premium (Colorful & Classic) dengan warna menarik dan frame berkualitas tinggi untuk menarik minat scan pelanggan.'
   }
 
   const benefits = [

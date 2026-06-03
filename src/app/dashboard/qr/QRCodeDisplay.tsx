@@ -4,10 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Download, ExternalLink, Copy, Check, QrCode, MessageCircle } from 'lucide-react'
 import { getPublicMenuUrl } from '@/lib/utils'
 import type { Outlet } from '@/types/database'
+import { usePlanLimit } from '@/hooks/usePlanLimit'
+import UpgradeWall from '../components/UpgradeWall'
 
 interface Props { outlet: Outlet }
 
 type Template = 'minimalis' | 'colorful' | 'classic'
+
+const PREMIUM_TEMPLATES: Template[] = ['colorful', 'classic']
 
 const templates: { id: Template; label: string; emoji: string }[] = [
   { id: 'minimalis', label: 'Minimalis', emoji: '⬜' },
@@ -18,11 +22,28 @@ const templates: { id: Template; label: string; emoji: string }[] = [
 export default function QRCodeDisplay({ outlet }: Props) {
   const canvasRef  = useRef<HTMLCanvasElement>(null)
   const [copied,   setCopied]   = useState(false)
-  const [template, setTemplate] = useState<Template>('colorful')
+  const [template, setTemplate] = useState<Template>('minimalis')
   const [hover,    setHover]    = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const menuUrl = getPublicMenuUrl(outlet.slug)
 
+  const { isPro, loading } = usePlanLimit()
+
+  useEffect(() => {
+    if (!loading && isPro) {
+      setTemplate('colorful')
+    }
+  }, [loading, isPro])
+
   useEffect(() => { generateQR() }, [menuUrl])
+
+  const handleTemplateSelect = (tId: Template) => {
+    if (PREMIUM_TEMPLATES.includes(tId) && !isPro) {
+      setShowUpgradeModal(true)
+      return
+    }
+    setTemplate(tId)
+  }
 
   async function generateQR() {
     const QRCode = (await import('qrcode')).default
@@ -37,6 +58,10 @@ export default function QRCodeDisplay({ outlet }: Props) {
   }
 
   async function downloadQR() {
+    if (PREMIUM_TEMPLATES.includes(template) && !isPro) {
+      setShowUpgradeModal(true)
+      return
+    }
     const QRCode = (await import('qrcode')).default
     const SIZE = 1000
     const exportCanvas = document.createElement('canvas')
@@ -177,16 +202,28 @@ export default function QRCodeDisplay({ outlet }: Props) {
           {templates.map(t => (
             <button
               key={t.id}
-              onClick={() => setTemplate(t.id)}
+              onClick={() => handleTemplateSelect(t.id)}
               style={{
                 padding: '5px 10px', borderRadius: 8, fontSize: 11.5, fontWeight: 600, cursor: 'pointer',
                 background: template === t.id ? '#f97316' : '#f9fafb',
                 color: template === t.id ? 'white' : '#6b7280',
                 border: `1.5px solid ${template === t.id ? '#f97316' : '#e5e7eb'}`,
                 transition: 'all 0.15s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4
               }}
             >
               {t.emoji} {t.label}
+              {PREMIUM_TEMPLATES.includes(t.id) && (
+                <span style={{
+                  fontSize: 8, fontWeight: 800,
+                  color: template === t.id ? '#f97316' : 'white',
+                  background: template === t.id ? 'white' : '#ea6c0a',
+                  padding: '1px 4px', borderRadius: 3,
+                  marginLeft: 2
+                }}>PRO</span>
+              )}
             </button>
           ))}
         </div>
@@ -235,10 +272,19 @@ export default function QRCodeDisplay({ outlet }: Props) {
                 background: template === t.id ? '#fff7ed' : '#f9fafb',
                 border: `1.5px solid ${template === t.id ? '#fdba74' : '#e5e7eb'}`,
                 display: 'flex', alignItems: 'center', gap: 10,
-              }} onClick={() => setTemplate(t.id)}>
+              }} onClick={() => handleTemplateSelect(t.id)}>
                 <span style={{ fontSize: 18 }}>{t.emoji}</span>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: template === t.id ? '#9a3412' : '#374151' }}>{t.label}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: template === t.id ? '#9a3412' : '#374151' }}>{t.label}</span>
+                    {PREMIUM_TEMPLATES.includes(t.id) && (
+                      <span style={{
+                        fontSize: 9, fontWeight: 800, color: '#f97316',
+                        background: '#fff7ed', border: '1px solid #fed7aa',
+                        padding: '1px 5px', borderRadius: 4
+                      }}>PRO</span>
+                    )}
+                  </div>
                   <div style={{ fontSize: 11, color: '#9ca3af' }}>
                     {t.id === 'minimalis' && 'Putih bersih, cocok untuk warung modern'}
                     {t.id === 'colorful'  && 'Orange vibrant, menarik perhatian pelanggan'}
@@ -276,6 +322,13 @@ export default function QRCodeDisplay({ outlet }: Props) {
           </p>
         </div>
       </div>
+
+      <UpgradeWall 
+        feature="premium_qr" 
+        isModal 
+        isOpen={showUpgradeModal} 
+        onClose={() => setShowUpgradeModal(false)} 
+      />
     </div>
   )
 }
