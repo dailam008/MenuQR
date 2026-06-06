@@ -359,10 +359,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             )}
 
+            <button
+              onClick={handleLogout}
+              className="md:hidden"
+              style={{ color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <LogOut size={16} />
+            </button>
+
             <Link
               href="/"
               style={{ fontSize: 13, color: '#6b7280', textDecoration: 'none', fontWeight: 500 }}
               target="_blank"
+              className="hidden md:block"
             >
               Lihat Menu ↗
             </Link>

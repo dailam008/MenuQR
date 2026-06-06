@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 import { QrCode, Utensils, BarChart3, Smartphone, CheckCircle2, ArrowRight, Zap, Shield, Globe, Star } from 'lucide-react'
 import type { Metadata } from 'next'
 import { HeroCounter } from './components/HeroCounter'
@@ -67,7 +68,10 @@ const trustBadges = [
   { icon: '💳', text: 'Tanpa Kartu Kredit' },
 ]
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
@@ -96,10 +100,18 @@ export default function LandingPage() {
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Link href="/login" className="btn btn-secondary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>Masuk</Link>
-            <Link href="/register" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
-              Daftar<span className="hidden sm:inline"> Gratis</span>
-            </Link>
+            {user ? (
+              <Link href="/dashboard" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
+                Ke Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="btn btn-secondary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>Masuk</Link>
+                <Link href="/register" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
+                  Daftar<span className="hidden sm:inline"> Gratis</span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -160,13 +172,22 @@ export default function LandingPage() {
 
           {/* CTA Buttons */}
           <div className="animate-fade-in flex flex-col sm:flex-row gap-3 justify-center px-4" style={{ animationDelay: '0.3s', maxWidth: 420, margin: '0 auto' }}>
-            <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
-              Mulai Gratis Sekarang
-              <ArrowRight size={18} />
-            </Link>
-            <Link href="/login" className="btn btn-secondary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
-              Masuk ke Dashboard
-            </Link>
+            {user ? (
+              <Link href="/dashboard" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
+                Ke Dashboard
+                <ArrowRight size={18} />
+              </Link>
+            ) : (
+              <>
+                <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
+                  Mulai Gratis Sekarang
+                  <ArrowRight size={18} />
+                </Link>
+                <Link href="/login" className="btn btn-secondary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
+                  Masuk ke Dashboard
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Trust Badges */}
