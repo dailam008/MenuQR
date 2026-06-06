@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     } catch {
       // Ignore signOut errors — clear session locally and redirect anyway
     } finally {
-      window.location.href = '/login'
+      window.location.href = '/'
     }
   }
 
