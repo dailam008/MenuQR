@@ -16,18 +16,18 @@ export const metadata: Metadata = {
 }
 
 const features = [
-  { icon: QrCode,      title: 'QR Code Unik',       description: 'Setiap outlet mendapatkan QR code eksklusif. Pelanggan scan, langsung lihat menu.',                   color: '#f97316', bg: '#fff7ed' },
-  { icon: Utensils,    title: 'Kelola Menu Mudah',   description: 'Tambah, edit, hapus item menu kapan saja. Lengkap dengan foto, harga, dan kategori.',                 color: '#8b5cf6', bg: '#f5f3ff' },
-  { icon: Smartphone,  title: 'Mobile-First',        description: 'Halaman menu dioptimasi untuk smartphone. Tampil cantik di layar kecil maupun besar.',                color: '#06b6d4', bg: '#ecfeff' },
-  { icon: BarChart3,   title: 'Dashboard Sederhana', description: 'Pantau jumlah menu aktif dan status outlet dari satu dashboard yang bersih.',                         color: '#16a34a', bg: '#f0fdf4' },
-  { icon: Zap,         title: 'Setup 5 Menit',       description: 'Daftar, buat outlet, upload menu, dan QR code siap disebar. Semudah itu.',                           color: '#eab308', bg: '#fefce8' },
-  { icon: Shield,      title: 'Aman & Terpercaya',   description: 'Data menu Anda aman dengan enkripsi penuh dan sistem autentikasi modern.',                           color: '#ef4444', bg: '#fef2f2' },
+  { icon: QrCode, title: 'QR Code Unik', description: 'Setiap outlet mendapatkan QR code eksklusif. Pelanggan scan, langsung lihat menu.', color: '#f97316', bg: '#fff7ed' },
+  { icon: Utensils, title: 'Kelola Menu Mudah', description: 'Tambah, edit, hapus item menu kapan saja. Lengkap dengan foto, harga, dan kategori.', color: '#8b5cf6', bg: '#f5f3ff' },
+  { icon: Smartphone, title: 'Mobile-First', description: 'Halaman menu dioptimasi untuk smartphone. Tampil cantik di layar kecil maupun besar.', color: '#06b6d4', bg: '#ecfeff' },
+  { icon: BarChart3, title: 'Dashboard Sederhana', description: 'Pantau jumlah menu aktif dan status outlet dari satu dashboard yang bersih.', color: '#16a34a', bg: '#f0fdf4' },
+  { icon: Zap, title: 'Setup 5 Menit', description: 'Daftar, buat outlet, upload menu, dan QR code siap disebar. Semudah itu.', color: '#eab308', bg: '#fefce8' },
+  { icon: Shield, title: 'Aman & Terpercaya', description: 'Data menu Anda aman dengan enkripsi penuh dan sistem autentikasi modern.', color: '#ef4444', bg: '#fef2f2' },
 ]
 
 const steps = [
-  { num: '01', title: 'Daftar Gratis',  desc: 'Buat akun dalam 30 detik dengan email Anda.' },
-  { num: '02', title: 'Buat Outlet',    desc: 'Isi nama warung, alamat, dan upload logo.' },
-  { num: '03', title: 'Upload Menu',    desc: 'Tambahkan item menu lengkap dengan foto & harga.' },
+  { num: '01', title: 'Daftar Gratis', desc: 'Buat akun dalam 30 detik dengan email Anda.' },
+  { num: '02', title: 'Buat Outlet', desc: 'Isi nama warung, alamat, dan upload logo.' },
+  { num: '03', title: 'Upload Menu', desc: 'Tambahkan item menu lengkap dengan foto & harga.' },
   { num: '04', title: 'Sebar QR Code', desc: 'Download QR code dan tempel di meja pelanggan.' },
 ]
 
@@ -399,23 +399,23 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
             {[
-              { 
-                name: 'Gratis', 
-                price: 'Rp 0', 
-                period: '/selamanya', 
-                highlight: false, 
+              {
+                name: 'Gratis',
+                price: 'Rp 0',
+                period: '/selamanya',
+                highlight: false,
                 features: [
                   '1 outlet cabang aktif',
                   'Maksimal 50 item menu makanan/minuman',
                   'Desain QR Code standar (Minimalis)',
                   'Halaman menu publik aktif & responsif'
-                ] 
+                ]
               },
-              { 
-                name: 'Pro', 
-                price: 'Rp 49.000', 
-                period: '/bulan', 
-                highlight: true, 
+              {
+                name: 'Pro',
+                price: 'Rp 49.000',
+                period: '/bulan',
+                highlight: true,
                 features: [
                   'Kelola hingga 5 outlet cabang aktif',
                   'Upload menu makanan & minuman tanpa batas',
@@ -426,7 +426,7 @@ export default function LandingPage() {
                   'Grafik analitik pengunjung & performa menu',
                   'Prioritas bantuan teknis langsung admin',
                   'Integrasi WhatsApp Share instan'
-                ] 
+                ]
               },
             ].map(plan => (
               <div key={plan.name} className="card" style={{ padding: 28, border: plan.highlight ? '2px solid #f97316' : '1px solid #e5e7eb', position: 'relative', overflow: 'hidden' }}>
@@ -499,7 +499,7 @@ export default function LandingPage() {
       <footer style={{ background: '#ffffff', borderTop: '1px solid #eaeaea', color: '#666666' }}>
         <div className="page-container" style={{ paddingTop: '64px', paddingBottom: '32px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px', marginBottom: '64px' }}>
-            
+
             {/* Brand Column */}
             <div className="footer-brand-column">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

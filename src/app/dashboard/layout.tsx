@@ -256,7 +256,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main */}
       <main className="dashboard-main">
         {/* Header */}
-        <header className="dashboard-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
+        <header className="dashboard-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', gap: 12 }}>
+          {/* Hamburger Menu (Mobile) */}
+          <button 
+            className="md:hidden" 
+            onClick={() => setSidebarOpen(true)}
+            style={{ background: 'none', border: 'none', padding: '8px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#111827', flexShrink: 0 }}
+          >
+            <Menu size={24} />
+          </button>
+
           {/* Mobile Outlet Switcher */}
           <div style={{ position: 'relative', width: 160 }} className="md:hidden">
             {loadingOutlets ? (

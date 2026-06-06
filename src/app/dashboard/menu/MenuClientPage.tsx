@@ -173,7 +173,9 @@ export default function MenuClientPage({ items: initialItems, categories, outlet
               {selected.size > 0 && <span style={{ color: '#f97316', fontWeight: 600 }}> · {selected.size} dipilih</span>}
             </p>
           </div>
-          {planLimit.canAddMenu ? (
+          {planLimit.loading ? (
+            <div className="animate-pulse" style={{ height: 40, width: 140, background: '#f3f4f6', borderRadius: 8 }} />
+          ) : planLimit.canAddMenu ? (
             <Link href="/dashboard/menu/new" className="btn btn-primary">
               <Plus size={16} /> Tambah Menu
             </Link>

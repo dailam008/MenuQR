@@ -23,7 +23,7 @@ export async function GET() {
       .eq('id', user.id)
       .maybeSingle()
 
-    const plan = userData?.plan || 'free'
+    const plan = userData?.plan?.toLowerCase() || 'free'
     const proExpiredAt = userData?.pro_expired_at || null
 
     // Count outlets

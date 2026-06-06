@@ -50,7 +50,7 @@ export function usePlanLimit(): PlanLimitData {
   }, [])
 
   const plan = data.plan
-  const isPro = plan === 'pro'
+  const isPro = plan?.toLowerCase() === 'pro'
   const outletCount = data.outletCount
   const menuCount = data.menuCount
 

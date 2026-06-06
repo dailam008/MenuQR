@@ -9,7 +9,7 @@ export async function getActiveOutlet(supabase: SupabaseClient, user: User) {
     .select('plan')
     .eq('id', user.id)
     .maybeSingle()
-  const isPro = userData?.plan === 'pro'
+  const isPro = userData?.plan?.toLowerCase() === 'pro'
 
   // Fetch all outlets owned by this user
   const { data: allOutlets } = await supabase

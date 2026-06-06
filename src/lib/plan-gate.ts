@@ -21,7 +21,7 @@ export async function isProExpired(supabase: SupabaseClient, userId: string): Pr
       return false
     }
 
-    if (userData.plan === 'pro' && userData.pro_expired_at) {
+    if (userData.plan?.toLowerCase() === 'pro' && userData.pro_expired_at) {
       const expiryTime = new Date(userData.pro_expired_at).getTime()
       if (Date.now() > expiryTime) {
         // 1. Downgrade public.users record
@@ -72,7 +72,7 @@ export async function checkPlan(
     .eq('id', userId)
     .maybeSingle()
 
-  const plan = userData?.plan || 'free'
+  const plan = userData?.plan?.toLowerCase() || 'free'
 
   // Pro-only features check
   if (['custom_domain', 'analytics', 'priority_support'].includes(feature)) {
@@ -99,13 +99,13 @@ export async function checkPlan(
     }
 
     const currentOutlets = count || 0
-    const limit = plan === 'pro' ? 5 : 1
+    const limit = plan?.toLowerCase() === 'pro' ? 5 : 1
 
     if (currentOutlets >= limit) {
       return {
         allowed: false,
         error: 'PLAN_LIMIT_REACHED',
-        message: plan === 'pro' 
+        message: plan?.toLowerCase() === 'pro' 
           ? 'Kamu sudah mencapai batas maksimal 5 outlet untuk plan Pro.'
           : 'Kamu sudah mencapai batas plan Gratis (maksimal 1 outlet). Upgrade ke Pro untuk mengelola hingga 5 outlet.',
         upgrade_url: '/upgrade'
