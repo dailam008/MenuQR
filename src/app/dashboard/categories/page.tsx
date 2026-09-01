@@ -27,10 +27,10 @@ export default async function CategoriesPage() {
   }
 
   return (
-    <div className="animate-fade-in">
+    <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 4 }}>Kategori Menu</h1>
-        <p style={{ color: '#6b7280', fontSize: 14 }}>Organisasi menu Anda berdasarkan kategori (Makanan, Minuman, dll).</p>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Kategori Menu</h1>
+        <p style={{ color: '#6b7280', fontSize: 14 }}>Kelompokkan menu kamu supaya pelanggan lebih mudah cari apa yang mereka mau.</p>
       </div>
       {!outlet ? (
         <div className="empty-state">

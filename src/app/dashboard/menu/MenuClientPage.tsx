@@ -164,12 +164,11 @@ export default function MenuClientPage({ items: initialItems, categories, outlet
       )}
 
       <div className="animate-fade-in">
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 4 }}>Menu Saya</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Menu Saya</h1>
             <p style={{ color: '#6b7280', fontSize: 14 }}>
-              {filtered.length} item ditemukan
+              {filtered.length} item
               {selected.size > 0 && <span style={{ color: '#f97316', fontWeight: 600 }}> · {selected.size} dipilih</span>}
             </p>
           </div>

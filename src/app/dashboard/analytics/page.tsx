@@ -148,26 +148,26 @@ export default function AnalyticsPage() {
       }}>
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0f172a', marginBottom: 4 }}>Analitik Menu</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>Analitik</h1>
           <p style={{ color: '#64748b', fontSize: 14 }}>
-            Pantau statistik kunjungan, tren pemindaian QR Code, dan performa katalog menu Anda.
+            Lihat seberapa ramai pelanggan buka menu digital kamu dan menu mana yang paling sering dilihat.
           </p>
         </div>
 
         {/* ── Empty State (no views yet) ────────────────────────────── */}
         {!hasViews && isPro && (
-          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '20px 24px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <QrCode size={20} color="#f97316" />
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <QrCode size={18} color="#f97316" />
               </div>
               <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', margin: 0 }}>Belum ada data kunjungan</p>
-                <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>Cetak QR Code dan letakkan di meja pelanggan untuk mulai mencatat statistik kunjungan.</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#0f172a', margin: 0 }}>Belum ada data kunjungan</p>
+                <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>Tempel QR code di meja pelanggan, nanti data scan masuk otomatis ke sini.</p>
               </div>
             </div>
             <Link href="/dashboard/qr" className="btn btn-secondary btn-sm" style={{ fontSize: 13 }}>
-              Buat QR Code
+              Buka QR Code
             </Link>
           </div>
         )}

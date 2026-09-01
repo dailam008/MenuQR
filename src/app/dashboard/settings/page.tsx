@@ -16,14 +16,13 @@ export default async function SettingsPage() {
   const { activeOutlet: outlet } = await getActiveOutlet(supabase, authUser)
 
   return (
-    <div className="animate-fade-in">
-
+    <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 4 }}>
-          {outlet ? 'Pengaturan Outlet' : 'Buat Outlet'}
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 }}>
+          {outlet ? 'Pengaturan Outlet' : 'Buat Outlet Baru'}
         </h1>
         <p style={{ color: '#6b7280', fontSize: 14 }}>
-          {outlet ? 'Edit informasi warung Anda.' : 'Isi data warung Anda untuk mulai.'}
+          {outlet ? 'Update informasi warung kamu di sini.' : 'Isi data warung kamu untuk mulai jualan digital.'}
         </p>
       </div>
       <OutletSettingsForm outlet={outlet} userId={authUser.id} />

@@ -60,9 +60,9 @@ export default function CategoriesClient({ outletId, initialCategories }: Props)
 
   return (
     <div style={{ maxWidth: 560 }}>
-      {/* Add new */}
+      {/* Tambah kategori */}
       <div className="card" style={{ padding: 20, marginBottom: 16 }}>
-        <p style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 12 }}>Tambah Kategori Baru</p>
+        <p style={{ fontSize: 14, fontWeight: 600, color: '#374151', marginBottom: 12 }}>Tambah Kategori</p>
         <div style={{ display: 'flex', gap: 8 }}>
           <input
             id="new-category-name"
@@ -92,7 +92,7 @@ export default function CategoriesClient({ outletId, initialCategories }: Props)
         {categories.length === 0 ? (
           <div className="empty-state" style={{ padding: '40px 24px' }}>
             <div className="empty-state-icon"><Plus size={24} /></div>
-            <p style={{ fontSize: 14, color: '#9ca3af' }}>Belum ada kategori. Tambahkan di atas.</p>
+            <p style={{ fontSize: 14, color: '#9ca3af' }}>Belum ada kategori. Coba tambahkan dulu di atas.</p>
           </div>
         ) : (
           <div>
@@ -148,7 +148,7 @@ export default function CategoriesClient({ outletId, initialCategories }: Props)
       </div>
 
       <p style={{ marginTop: 12, fontSize: 12, color: '#9ca3af' }}>
-        💡 Hapus kategori tidak akan menghapus item menu di dalamnya.
+        Catatan: menghapus kategori tidak otomatis menghapus menu di dalamnya.
       </p>
     </div>
   )
