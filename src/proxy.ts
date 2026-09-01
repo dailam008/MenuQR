@@ -27,10 +27,10 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1'
   const { pathname } = request.nextUrl
 
-  // 1. Rate Limiting Checks (Skip or use high limit in development / GET page visits)
+  // 1. Rate Limiting Checks (Skip in development / local)
   const isDev = process.env.NODE_ENV === 'development' || ip === '127.0.0.1' || ip === '::1'
 
-  // Auth routes limit: max 60 req/minute on dev, 20 on prod
+  // Auth routes limit: max 20 req/minute in prod
   if (!isDev && (pathname === '/login' || pathname === '/register')) {
     if (isRateLimited(ip, 20, 60 * 1000, 'auth')) {
       return new NextResponse('Too Many Requests. Silakan tunggu beberapa saat sebelum mencoba kembali.', {
@@ -67,7 +67,7 @@ export async function middleware(request: NextRequest) {
     })
   }
 
-  // 2. Supabase Auth Protection & Proxy Redirects
+  // 2. Supabase Auth Protection & Route Redirects
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -90,11 +90,11 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user) {
-    // Dynamically check if the user's Pro plan has expired on every authenticated page request
+    // Check if user's Pro plan has expired
     try {
       await isProExpired(supabase, user.id)
     } catch (e) {
-      console.error('Middleware plan expiry validation failed:', e)
+      console.error('Proxy plan expiry check failed:', e)
     }
   }
 
