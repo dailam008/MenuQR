@@ -328,12 +328,17 @@ export default function AnalyticsPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {d.top_menus.map((item, idx) => {
                 const pct = Math.round((item.view_count / maxMenuViews) * 100)
-                const medals = ['🥇', '🥈', '🥉', '4', '5']
                 return (
                   <div key={item.menu_item_id}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                      <span style={{ fontSize: idx < 3 ? 18 : 13, fontWeight: 800, width: 24, textAlign: 'center', flexShrink: 0 }}>
-                        {medals[idx]}
+                      <span style={{ 
+                        width: 24, height: 24, borderRadius: 6,
+                        background: idx === 0 ? '#ffedd5' : idx === 1 ? '#f1f5f9' : '#f8fafc',
+                        color: idx === 0 ? '#ea580c' : '#64748b',
+                        fontSize: 11.5, fontWeight: 700, 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 
+                      }}>
+                        #{idx + 1}
                       </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

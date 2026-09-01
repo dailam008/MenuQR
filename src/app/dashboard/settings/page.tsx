@@ -16,13 +16,13 @@ export default async function SettingsPage() {
   const { activeOutlet: outlet } = await getActiveOutlet(supabase, authUser)
 
   return (
-    <div>
+    <div style={{ maxWidth: 1000 }}>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>
           {outlet ? 'Pengaturan Outlet' : 'Buat Outlet Baru'}
         </h1>
-        <p style={{ color: '#6b7280', fontSize: 14 }}>
-          {outlet ? 'Update informasi warung kamu di sini.' : 'Isi data warung kamu untuk mulai jualan digital.'}
+        <p style={{ color: '#64748b', fontSize: 13.5 }}>
+          {outlet ? 'Kelola identitas, logo, dan tautan menu digital outlet Anda.' : 'Lengkapi data gerai untuk mulai mengelola katalog menu digital.'}
         </p>
       </div>
       <OutletSettingsForm outlet={outlet} userId={authUser.id} />
