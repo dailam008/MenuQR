@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { UtensilsCrossed, Tag, QrCode, Plus, ArrowRight, TrendingUp } from 'lucide-react'
+import { UtensilsCrossed, Tag, QrCode, Plus, ArrowRight, TrendingUp, BarChart2 } from 'lucide-react'
 import { BarChart } from './components/BarChart'
 import type { Outlet } from '@/types/database'
 
+// Tips harian — dibuat manual biar relevan
 const tips = [
-  { icon: '📸', title: 'Foto menu yang menarik', body: 'Gunakan cahaya alami dan latar netral. Foto makanan yang baik bisa meningkatkan pemesanan hingga 30%!' },
-  { icon: '💰', title: 'Update harga rutin', body: 'Selalu update harga sebelum bahan baku naik. Pelanggan suka transparansi harga yang akurat.' },
-  { icon: '📲', title: 'Sebar QR code lebih luas', body: 'Cetak QR dan tempel di pintu masuk, meja, dan struk. Semakin banyak titik scan = lebih banyak pengunjung digital.' },
-  { icon: '🏷️', title: 'Gunakan kategori menu', body: 'Kelompokkan menu ke kategori (Makanan, Minuman, Snack). Pelanggan lebih mudah menemukan apa yang dicari.' },
-  { icon: '⭐', title: 'Tandai menu unggulan', body: 'Tambahkan deskripsi singkat "Best Seller" atau "Favorit Pelanggan" di nama menu untuk menarik perhatian.' },
-  { icon: '🕐', title: 'Tandai menu habis tepat waktu', body: 'Segera update status Habis/Tersedia agar pelanggan tidak kecewa pesan menu yang sudah habis.' },
-  { icon: '🌟', title: 'Minta review dari pelanggan', body: 'Share link menu ke WhatsApp status. Semakin sering dilihat, semakin dikenal warung Anda.' },
+  { icon: '📸', title: 'Foto yang bikin ngiler', body: 'Pakai cahaya alami, hindari flash langsung. Foto makanan yang bagus bisa naikkan minat pelanggan secara signifikan.' },
+  { icon: '💰', title: 'Jangan sampai harga mati', body: 'Update harga secara berkala supaya pelanggan tidak kaget pas bayar. Transparansi harga itu penting banget.' },
+  { icon: '📲', title: 'Sebar QR code lebih luas', body: 'Tempel di pintu masuk, meja, dan struk. Semakin banyak titik tempel = makin banyak yang buka menu digital kamu.' },
+  { icon: '🏷️', title: 'Manfaatkan fitur kategori', body: 'Pisahkan Makanan, Minuman, Snack. Pelanggan jadi lebih mudah cari menu yang mereka mau.' },
+  { icon: '⭐', title: 'Highlight menu andalan', body: 'Tambahkan keterangan "Best Seller" atau "Favorit" di nama menu — sederhana tapi efektif menarik perhatian.' },
+  { icon: '🕐', title: 'Update stok tepat waktu', body: 'Kalau menu habis, langsung ubah statusnya. Pelanggan yang kecewa karena menu habis jarang balik lagi.' },
+  { icon: '🌟', title: 'Share link menu ke WhatsApp', body: 'Bagikan link menu ke status atau grup. Semakin sering dilihat, semakin dikenal warung kamu di lingkungan sekitar.' },
 ]
 
 interface DashboardClientProps {
@@ -50,9 +51,7 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
     async function fetchAnalytics() {
       try {
         const res = await fetch('/api/analytics/summary', { cache: 'no-store' })
-        if (!res.ok) {
-          throw new Error('Gagal memuat data dari server')
-        }
+        if (!res.ok) throw new Error('Gagal memuat data dari server')
         const summary = await res.json()
         setData(summary)
       } catch (err: any) {
@@ -67,148 +66,154 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
   const todayTip = tips[new Date().getDay()]
   const medals = ['🥇', '🥈', '🥉']
 
-  // Stats definition helper
   const statsDef = [
     { label: 'Total Menu', key: 'menu_count' as const, icon: UtensilsCrossed, color: '#f97316', bg: '#fff7ed' },
     { label: 'Menu Tersedia', key: 'available_count' as const, icon: TrendingUp, color: '#16a34a', bg: '#f0fdf4' },
     { label: 'Kategori', key: 'category_count' as const, icon: Tag, color: '#8b5cf6', bg: '#f5f3ff' },
-    { label: 'Total Outlet', key: 'outlet_count' as const, icon: QrCode, color: '#06b6d4', bg: '#ecfeff' },
+    { label: 'Total Outlet', key: 'outlet_count' as const, icon: QrCode, color: '#0891b2', bg: '#ecfeff' },
   ]
 
   const hasScanData = data && data.views_per_day.some(d => d.count > 0)
   const chartData = data?.views_per_day.map(d => ({ label: d.label, value: d.count })) || []
 
   return (
-    <div className="animate-fade-in">
-      {/* Greeting */}
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111827', marginBottom: 4 }}>
-          {greeting}, {fullName}! 👋
+    <div>
+      {/* Sapaan */}
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111827', marginBottom: 4 }}>
+          {greeting}, {fullName.split(' ')[0]}! 👋
         </h1>
-        <p style={{ color: '#6b7280', fontSize: 14 }}>
-          {initialOutlet ? `Outlet "${initialOutlet.name}" sedang aktif.` : 'Yuk, buat outlet pertama Anda untuk mulai!'}
+        <p style={{ color: '#6b7280', fontSize: 14, lineHeight: 1.5 }}>
+          {initialOutlet
+            ? `Outlet "${initialOutlet.name}" sedang aktif. Yuk pantau performa menu hari ini.`
+            : 'Belum punya outlet? Yuk buat dulu biar kamu bisa mulai kelola menu digital.'}
         </p>
       </div>
 
-      {/* No outlet banner */}
+      {/* Banner belum ada outlet */}
       {!initialOutlet && (
-        <div style={{ background: 'linear-gradient(135deg, #fff7ed, #fed7aa)', border: '1.5px solid #fdba74', borderRadius: 16, padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
+        <div style={{
+          background: '#fff7ed',
+          border: '1px solid #fed7aa',
+          borderRadius: 12,
+          padding: '20px 24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 24, flexWrap: 'wrap', gap: 14
+        }}>
           <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#9a3412', marginBottom: 4 }}>Belum ada outlet 🏪</h2>
-            <p style={{ fontSize: 14, color: '#c2410c' }}>Buat outlet pertama Anda untuk mulai mengelola menu digital.</p>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: '#9a3412', marginBottom: 4 }}>
+              🏪 Belum ada outlet
+            </h2>
+            <p style={{ fontSize: 13.5, color: '#c2410c' }}>
+              Buat outlet pertama kamu untuk mulai mengelola menu digital.
+            </p>
           </div>
-          <Link href="/dashboard/settings" className="btn btn-primary"><Plus size={16} />Buat Outlet</Link>
+          <Link href="/dashboard/settings" className="btn btn-primary" style={{ fontSize: 14 }}>
+            <Plus size={15} /> Buat Outlet
+          </Link>
         </div>
       )}
 
-      {/* Stats Grid */}
-      <div className="stats-grid stagger" style={{ marginBottom: 28 }}>
+      {/* Kartu Statistik */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 14, marginBottom: 24 }}>
         {statsDef.map(s => {
           const val = data ? data.stats[s.key] : null
           return (
-            <div key={s.label} className="stat-card animate-fade-in">
-              <div className="stat-icon" style={{ background: s.bg }}><s.icon size={20} color={s.color} /></div>
+            <div key={s.label} className="card" style={{ padding: '18px 16px' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <s.icon size={18} color={s.color} />
+              </div>
               {loading ? (
-                <div className="animate-pulse" style={{ height: 28, width: 60, background: '#e5e7eb', borderRadius: 6, margin: '8px 0' }} />
+                <div style={{ height: 28, width: 50, background: '#f3f4f6', borderRadius: 6, marginBottom: 6 }} />
               ) : (
-                <div className="stat-value">{val ?? 0}</div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: '#111827', lineHeight: 1 }}>{val ?? 0}</div>
               )}
-              <div className="stat-label">{s.label}</div>
+              <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>{s.label}</div>
             </div>
           )
         })}
       </div>
 
-      {/* Error alert */}
+      {/* Error */}
       {error && (
-        <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: 12, padding: '12px 16px', color: '#b91c1c', fontSize: 13, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>⚠️ {error}</span>
+        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '12px 16px', color: '#b91c1c', fontSize: 13, marginBottom: 20 }}>
+          ⚠️ {error}
         </div>
       )}
 
-      {/* Analytics Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, marginBottom: 24 }}>
+      {/* Baris Grafik + Menu Populer + Tips */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 20 }}>
 
-        {/* Bar Chart Section */}
-        <div className="card" style={{ padding: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>Scan QR 7 Hari Terakhir</h2>
-            </div>
+        {/* Grafik 7 Hari */}
+        <div className="card" style={{ padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <BarChart2 size={16} color="#f97316" />
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>Scan QR 7 Hari Terakhir</h2>
           </div>
-          
+
           {loading ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, height: 160, justifyContent: 'flex-end', paddingBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, height: 120 }}>
-                {[1, 2, 3, 4, 5, 6, 7].map(i => (
-                  <div key={i} className="animate-pulse" style={{ flex: 1, height: `${20 + (i * 12) % 60}%`, background: '#e5e7eb', borderRadius: '4px 4px 0 0' }} />
-                ))}
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map(day => (
-                  <span key={day} style={{ fontSize: 10, color: '#9ca3af', width: '100%', textAlign: 'center' }}>{day}</span>
-                ))}
-              </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, height: 110, paddingBottom: 8 }}>
+              {[40, 60, 35, 75, 50, 80, 45].map((h, i) => (
+                <div key={i} style={{ flex: 1, height: `${h}%`, background: '#f3f4f6', borderRadius: '4px 4px 0 0' }} />
+              ))}
             </div>
           ) : !initialOutlet ? (
-            <div style={{ textAlign: 'center', padding: '36px 0', color: '#9ca3af' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📊</div>
-              <p style={{ fontSize: 13 }}>Belum memiliki outlet untuk melihat grafik.</p>
+            <div style={{ textAlign: 'center', padding: '30px 0', color: '#9ca3af' }}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>📊</div>
+              <p style={{ fontSize: 13 }}>Buat outlet dulu untuk lihat grafik ini.</p>
             </div>
           ) : !hasScanData ? (
-            <div style={{ textAlign: 'center', padding: '36px 20px', color: '#9ca3af', border: '1px dashed #e5e7eb', borderRadius: 12 }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📲</div>
+            <div style={{ textAlign: 'center', padding: '30px 16px', color: '#9ca3af', border: '1px dashed #e5e7eb', borderRadius: 10 }}>
+              <div style={{ fontSize: 28, marginBottom: 6 }}>📲</div>
               <p style={{ fontSize: 13, color: '#4b5563', fontWeight: 600 }}>Belum ada scan hari ini</p>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 4 }}>Sebar QR code ke meja pelanggan!</p>
+              <p style={{ fontSize: 12, marginTop: 3 }}>Sebar QR code ke meja pelanggan!</p>
             </div>
           ) : (
-            <BarChart data={chartData} color="#f97316" height={160} />
+            <BarChart data={chartData} color="#f97316" height={140} />
           )}
         </div>
 
-        {/* Popular Menu Section */}
-        <div className="card" style={{ padding: 24 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: '#111827', marginBottom: 16 }}>Menu Terpopuler</h2>
-          
+        {/* Menu Terpopuler */}
+        <div className="card" style={{ padding: 20 }}>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#374151', marginBottom: 16 }}>Menu Paling Sering Dilihat</h2>
+
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[1, 2, 3].map(i => (
-                <div key={i} className="animate-pulse" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#e5e7eb' }} />
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: '#e5e7eb' }} />
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#f3f4f6' }} />
+                  <div style={{ width: 36, height: 36, borderRadius: 8, background: '#f3f4f6' }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ height: 14, width: '70%', background: '#e5e7eb', borderRadius: 4, marginBottom: 6 }} />
-                    <div style={{ height: 12, width: '40%', background: '#e5e7eb', borderRadius: 4 }} />
+                    <div style={{ height: 12, width: '65%', background: '#f3f4f6', borderRadius: 4, marginBottom: 5 }} />
+                    <div style={{ height: 11, width: '40%', background: '#f3f4f6', borderRadius: 4 }} />
                   </div>
                 </div>
               ))}
             </div>
           ) : !data?.top_menus || data.top_menus.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '24px 20px', color: '#9ca3af', border: '1px dashed #e5e7eb', borderRadius: 12 }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🍽️</div>
-              <p style={{ fontSize: 13, color: '#4b5563' }}>Menu belum ada yang dilihat pelanggan</p>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 4 }}>
-                <Link href="/dashboard/menu/new" style={{ color: '#f97316', fontWeight: 600 }}>Tambah menu</Link> atau bagikan link menu Anda.
+            <div style={{ textAlign: 'center', padding: '24px 16px', color: '#9ca3af', border: '1px dashed #e5e7eb', borderRadius: 10 }}>
+              <div style={{ fontSize: 28, marginBottom: 6 }}>🍽️</div>
+              <p style={{ fontSize: 13, color: '#4b5563' }}>Belum ada menu yang dilihat pelanggan</p>
+              <p style={{ fontSize: 12, marginTop: 4 }}>
+                <Link href="/dashboard/menu/new" style={{ color: '#f97316', fontWeight: 600 }}>Tambah menu</Link> atau bagikan link menu kamu.
               </p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {data.top_menus.slice(0, 3).map((item, idx) => (
-                <div key={item.menu_item_id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 20, flexShrink: 0 }}>{medals[idx]}</span>
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: item.image_url ? 'transparent' : '#f3f4f6', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div key={item.menu_item_id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18, flexShrink: 0 }}>{medals[idx]}</span>
+                  <div style={{ width: 38, height: 38, borderRadius: 8, background: '#f3f4f6', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {item.image_url
                       ? <img src={item.image_url} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span>🍽️</span>}
+                      : <span style={{ fontSize: 16 }}>🍽️</span>}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
-                    <div style={{ fontSize: 12, color: '#f97316', fontWeight: 700 }}>
-                      Rp {item.price.toLocaleString('id-ID')}
-                    </div>
+                    <div style={{ fontSize: 12, color: '#f97316', fontWeight: 600 }}>Rp {item.price.toLocaleString('id-ID')}</div>
                   </div>
-                  <div style={{ fontSize: 11, color: '#6b7280', flexShrink: 0, background: '#f3f4f6', padding: '2px 8px', borderRadius: 8, fontWeight: 600 }}>
-                    {item.view_count}x dilihat
+                  <div style={{ fontSize: 11, color: '#6b7280', background: '#f9fafb', border: '1px solid #e5e7eb', padding: '2px 7px', borderRadius: 6, flexShrink: 0, fontWeight: 600 }}>
+                    {item.view_count}x
                   </div>
                 </div>
               ))}
@@ -216,24 +221,24 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
           )}
         </div>
 
-        {/* Tip of the day */}
-        <div className="card" style={{ padding: 24, background: 'linear-gradient(135deg, #fff7ed, #fffbf7)', border: '1.5px solid #fed7aa' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#ea6c0a', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+        {/* Tips Harian */}
+        <div className="card" style={{ padding: 20, background: '#fffbf7', border: '1px solid #fed7aa' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#ea6c0a', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
             💡 Tips Hari Ini
           </div>
-          <div style={{ fontSize: 28, marginBottom: 10 }}>{todayTip.icon}</div>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#9a3412', marginBottom: 8 }}>{todayTip.title}</h3>
-          <p style={{ fontSize: 13, color: '#c2410c', lineHeight: 1.6 }}>{todayTip.body}</p>
+          <div style={{ fontSize: 26, marginBottom: 10 }}>{todayTip.icon}</div>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#7c2d12', marginBottom: 6 }}>{todayTip.title}</h3>
+          <p style={{ fontSize: 13, color: '#92400e', lineHeight: 1.6 }}>{todayTip.body}</p>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <h2 style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 14 }}>Aksi Cepat</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+      {/* Aksi Cepat */}
+      <h2 style={{ fontSize: 15, fontWeight: 700, color: '#374151', marginBottom: 12 }}>Aksi Cepat</h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
         {[
-          { href: '/dashboard/menu/new', icon: Plus, label: 'Tambah Menu Baru', desc: 'Tambahkan item ke menu Anda', color: '#f97316', bg: '#fff7ed' },
-          { href: '/dashboard/categories', icon: Tag, label: 'Kelola Kategori', desc: 'Atur kategori menu Anda', color: '#8b5cf6', bg: '#f5f3ff' },
-          { href: '/dashboard/qr', icon: QrCode, label: 'Lihat QR Code', desc: 'Download QR untuk outlet', color: '#06b6d4', bg: '#ecfeff' },
+          { href: '/dashboard/menu/new', icon: Plus, label: 'Tambah Menu', desc: 'Tambah item ke katalog', color: '#f97316', bg: '#fff7ed' },
+          { href: '/dashboard/categories', icon: Tag, label: 'Kelola Kategori', desc: 'Atur pengelompokan menu', color: '#8b5cf6', bg: '#f5f3ff' },
+          { href: '/dashboard/qr', icon: QrCode, label: 'QR Code', desc: 'Download QR untuk outlet', color: '#0891b2', bg: '#ecfeff' },
           { href: initialOutlet ? `/menu/${initialOutlet.slug}` : '#', icon: ArrowRight, label: 'Lihat Menu Publik', desc: 'Tampilan yang dilihat pelanggan', color: '#16a34a', bg: '#f0fdf4' },
         ].map(action => (
           <Link
@@ -241,13 +246,13 @@ export default function DashboardClient({ fullName, greeting, initialOutlet }: D
             href={action.href}
             target={action.href.startsWith('/menu') ? '_blank' : undefined}
             className="card card-hover"
-            style={{ padding: '18px 20px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14 }}
+            style={{ padding: '16px 18px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}
           >
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: action.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <action.icon size={20} color={action.color} />
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: action.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <action.icon size={18} color={action.color} />
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 2 }}>{action.label}</div>
+              <div style={{ fontSize: 13.5, fontWeight: 700, color: '#111827', marginBottom: 2 }}>{action.label}</div>
               <div style={{ fontSize: 12, color: '#6b7280' }}>{action.desc}</div>
             </div>
           </Link>
