@@ -44,7 +44,7 @@ export default function LimitBlocker({ limitType, currentCount }: LimitBlockerPr
                 boxShadow: '0 4px 14px rgba(249, 115, 22, 0.3)', marginTop: 8
               }}
             >
-              <Sparkles size={16} color="white" /> Upgrade ke PRO Sekarang (Rp 49.000)
+              <Sparkles size={16} color="white" /> Buka Akses Tambah Outlet (Paket PRO)
             </button>
           </>
         ) : (

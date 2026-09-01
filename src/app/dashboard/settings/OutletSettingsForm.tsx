@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Store, MapPin, FileText, Image, CheckCircle2, AlertCircle, Link2, Globe } from 'lucide-react'
+import { Store, MapPin, FileText, Image, CheckCircle2, AlertCircle, Link2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { slugify } from '@/lib/utils'
 import type { Outlet, OutletInsert, Database } from '@/types/database'
@@ -22,7 +22,6 @@ export default function OutletSettingsForm({ outlet, userId }: Props) {
   const [slug, setSlug] = useState(outlet?.slug || '')
   const [address, setAddress] = useState(outlet?.address || '')
   const [description, setDescription] = useState(outlet?.description || '')
-  const [customDomain, setCustomDomain] = useState(outlet?.custom_domain || '')
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string>(outlet?.logo_url || '')
   const [loading, setLoading] = useState(false)
@@ -74,7 +73,7 @@ export default function OutletSettingsForm({ outlet, userId }: Props) {
         address: address.trim() || null,
         description: description.trim() || null,
         logo_url: logoUrl,
-        custom_domain: isPro ? (customDomain.trim() || null) : null,
+        custom_domain: null,
       }
 
       let err
@@ -85,7 +84,7 @@ export default function OutletSettingsForm({ outlet, userId }: Props) {
           address: basePayload.address,
           description: basePayload.description,
           logo_url: basePayload.logo_url,
-          custom_domain: basePayload.custom_domain,
+          custom_domain: null,
           updated_at: new Date().toISOString(),
         }
         ;({ error: err } = await supabase.from('outlets').update(updatePayload).eq('id', outlet.id))
@@ -199,47 +198,6 @@ export default function OutletSettingsForm({ outlet, userId }: Props) {
             {slug && (
               <p className="form-hint">
                 URL menu: <strong>/menu/{slug}</strong>
-              </p>
-            )}
-          </div>
-
-          {/* Custom Domain (PRO Feature) */}
-          <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} htmlFor="outlet-custom-domain">
-              <span>Domain Kustom</span>
-              {!isPro && (
-                <span style={{
-                  background: 'linear-gradient(135deg, #fff7ed, #ffedd5)',
-                  border: '1px solid #fed7aa',
-                  color: '#f97316',
-                  fontSize: 10,
-                  fontWeight: 800,
-                  padding: '2px 8px',
-                  borderRadius: 20,
-                  marginLeft: 8
-                }}>PRO</span>
-              )}
-            </label>
-            <div style={{ position: 'relative' }}>
-              <Globe size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
-              <input
-                id="outlet-custom-domain"
-                type="text"
-                className="form-input"
-                style={{ paddingLeft: 38 }}
-                placeholder="menu.warunganda.com"
-                value={customDomain}
-                onChange={e => setCustomDomain(e.target.value)}
-                disabled={!isPro}
-              />
-            </div>
-            {!isPro ? (
-              <p className="form-hint" style={{ color: '#f97316', fontWeight: 500 }}>
-                Fitur domain kustom dinonaktifkan. Upgrade ke plan Pro untuk mengaktifkannya.
-              </p>
-            ) : (
-              <p className="form-hint">
-                Hubungi admin di WhatsApp untuk mengonfigurasi DNS setelah mengisi domain.
               </p>
             )}
           </div>

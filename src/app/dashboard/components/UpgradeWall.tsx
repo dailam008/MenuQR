@@ -4,7 +4,7 @@ import { Lock, Sparkles, Check, X } from 'lucide-react'
 import Link from 'next/link'
 
 interface UpgradeWallProps {
-  feature: 'outlet' | 'menu_item' | 'custom_domain' | 'analytics' | 'premium_qr'
+  feature: 'outlet' | 'menu_item' | 'analytics' | 'premium_qr'
   isModal?: boolean
   isOpen?: boolean
   onClose?: () => void
@@ -16,16 +16,14 @@ export default function UpgradeWall({ feature, isModal = false, isOpen = true, o
   const featureDesc: Record<typeof feature, string> = {
     outlet: 'Batas pembuatan outlet pada plan Gratis Anda telah tercapai. Upgrade ke Pro untuk mengelola hingga 5 outlet cabang aktif.',
     menu_item: 'Batas maksimal 50 menu item pada plan Gratis Anda telah tercapai. Upgrade ke Pro untuk menambahkan menu item sepuasnya tanpa batas.',
-    custom_domain: 'Gunakan alamat website kustom Anda sendiri (misal: menu.warunganda.com) agar identitas warung Anda terlihat premium dan profesional.',
     analytics: 'Akses analitik lengkap statistik pengunjung, performa scan QR harian, dan item menu makanan/minuman yang paling sering dilihat pelanggan.',
-    premium_qr: 'Akses template stiker QR Code premium (Colorful & Classic) dengan warna menarik dan frame berkualitas tinggi untuk menarik minat scan pelanggan.'
+    premium_qr: 'Akses template stiker QR Code (Colorful & Classic) dengan warna menarik dan frame berkualitas tinggi untuk menarik minat scan pelanggan.'
   }
 
   const benefits = [
     'Kelola hingga 5 outlet cabang aktif (Gratis cuma 1)',
     'Upload menu makanan & minuman tanpa batas (Gratis maks 50)',
-    'Desain QR Code kustom premium (Warna & Frame stiker)',
-    'Grafik analitik pengunjung & performa menu detail',
+    'Dashboard analitik kunjungan & performa menu detail',
     'Prioritas dukungan teknis langsung dari admin'
   ]
 
@@ -73,7 +71,7 @@ export default function UpgradeWall({ feature, isModal = false, isOpen = true, o
       </div>
 
       <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
-        Fitur ini khusus Plan Pro ⚡
+        Fitur ini tersedia di Paket Pro
       </h2>
       
       <p style={{ fontSize: '13.5px', color: '#6b7280', lineHeight: 1.6, marginBottom: 20 }}>
@@ -107,7 +105,7 @@ export default function UpgradeWall({ feature, isModal = false, isOpen = true, o
           className="btn btn-primary btn-lg"
           style={{ width: '100%', justifyContent: 'center' }}
         >
-          Upgrade ke Pro — Rp 49.000/bln
+          Upgrade ke Pro — Rp 18.000/bln
         </Link>
         {isModal && onClose && (
           <button 

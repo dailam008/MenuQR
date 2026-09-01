@@ -165,7 +165,7 @@ Mohon aktivasi akun saya. Terima kasih!`
             <h3 style={{ fontSize: 18, fontWeight: 800, color: '#f97316', marginBottom: 4 }}>Pro</h3>
             <p style={{ fontSize: 12.5, color: '#f97316', fontWeight: 600, marginBottom: 16 }}>Pilihan terbaik untuk bisnis kuliner</p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 28 }}>
-              <span style={{ fontSize: 32, fontWeight: 800, color: '#1e293b' }}>Rp 49.000</span>
+              <span style={{ fontSize: 32, fontWeight: 800, color: '#1e293b' }}>Rp 18.000</span>
               <span style={{ fontSize: 13, color: '#64748b' }}>/ bulan</span>
             </div>
 
@@ -189,10 +189,6 @@ Mohon aktivasi akun saya. Terima kasih!`
               <li style={{ display: 'flex', gap: 10, fontSize: 13.5, color: '#334155', fontWeight: 600 }}>
                 <Check size={16} color="#f97316" strokeWidth={3} style={{ flexShrink: 0, marginTop: 2 }} />
                 <span>Analitik Menu Pengunjung</span>
-              </li>
-              <li style={{ display: 'flex', gap: 10, fontSize: 13.5, color: '#334155', fontWeight: 600 }}>
-                <Check size={16} color="#f97316" strokeWidth={3} style={{ flexShrink: 0, marginTop: 2 }} />
-                <span>Domain Kustom (PRO)</span>
               </li>
               <li style={{ display: 'flex', gap: 10, fontSize: 13.5, color: '#334155', fontWeight: 600 }}>
                 <Check size={16} color="#f97316" strokeWidth={3} style={{ flexShrink: 0, marginTop: 2 }} />
@@ -232,7 +228,7 @@ Mohon aktivasi akun saya. Terima kasih!`
               </div>
               <div style={{ flex: 1, paddingTop: 4 }}>
                 <p style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', margin: '0 0 6px 0' }}>
-                  Transfer biaya langganan Rp 49.000
+                  Transfer biaya langganan Rp 18.000
                 </p>
                 <div style={{ 
                   background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16,
@@ -292,7 +288,7 @@ Mohon aktivasi akun saya. Terima kasih!`
                   Screenshot / Simpan bukti transfer
                 </p>
                 <p style={{ fontSize: 12.5, color: '#64748b', margin: 0 }}>
-                  Pastikan nominal transfer tepat Rp 49.000 dan menunjukkan status transfer berhasil.
+                  Pastikan nominal transfer tepat Rp 18.000 dan menunjukkan status transfer berhasil.
                 </p>
               </div>
             </div>

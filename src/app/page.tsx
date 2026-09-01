@@ -1,71 +1,92 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { QrCode, Utensils, BarChart3, Smartphone, CheckCircle2, ArrowRight, Zap, Shield, Globe, Star } from 'lucide-react'
+import { QrCode, Utensils, BarChart3, Smartphone, CheckCircle2, ArrowRight, Shield, RefreshCw, Layers, SlidersHorizontal, Eye } from 'lucide-react'
 import type { Metadata } from 'next'
-import { HeroCounter } from './components/HeroCounter'
 import { FAQAccordion } from './components/FAQAccordion'
 import { faqJsonLd } from '@/lib/faq-data'
 
 export const metadata: Metadata = {
-  title: 'MenuQR — Menu Digital QR Code untuk Warung & Restoran Indonesia',
+  title: 'MenuQR — Sistem Katalog Menu Digital Berbasis QR Code',
   description:
-    'Buat menu digital profesional dengan QR code untuk warung & restoran UMKM Indonesia. Gratis 1 outlet selamanya. Setup hanya 5 menit, tanpa install aplikasi.',
+    'Aplikasi manajemen katalog menu makanan dan minuman berbasis QR Code untuk mempermudah operasional usaha kuliner dan restoran.',
   openGraph: {
-    title: 'MenuQR — Menu Digital QR Code untuk Warung & Restoran',
-    description: 'Buat menu digital dengan QR code dalam 5 menit. Gratis untuk 1 outlet. Pelanggan scan, langsung lihat menu.',
+    title: 'MenuQR — Sistem Katalog Menu Digital Berbasis QR Code',
+    description: 'Kelola menu digital restoran dan cetak QR Code meja dengan mudah.',
   },
 }
 
 const features = [
-  { icon: QrCode, title: 'QR Code Unik', description: 'Setiap outlet mendapatkan QR code eksklusif. Pelanggan scan, langsung lihat menu.', color: '#f97316', bg: '#fff7ed' },
-  { icon: Utensils, title: 'Kelola Menu Mudah', description: 'Tambah, edit, hapus item menu kapan saja. Lengkap dengan foto, harga, dan kategori.', color: '#8b5cf6', bg: '#f5f3ff' },
-  { icon: Smartphone, title: 'Mobile-First', description: 'Halaman menu dioptimasi untuk smartphone. Tampil cantik di layar kecil maupun besar.', color: '#06b6d4', bg: '#ecfeff' },
-  { icon: BarChart3, title: 'Dashboard Sederhana', description: 'Pantau jumlah menu aktif dan status outlet dari satu dashboard yang bersih.', color: '#16a34a', bg: '#f0fdf4' },
-  { icon: Zap, title: 'Setup 5 Menit', description: 'Daftar, buat outlet, upload menu, dan QR code siap disebar. Semudah itu.', color: '#eab308', bg: '#fefce8' },
-  { icon: Shield, title: 'Aman & Terpercaya', description: 'Data menu Anda aman dengan enkripsi penuh dan sistem autentikasi modern.', color: '#ef4444', bg: '#fef2f2' },
+  {
+    icon: QrCode,
+    title: 'QR Code Dinamis Tiap Outlet',
+    description: 'Setiap outlet memiliki tautan dan QR Code tersendiri yang dapat langsung dicetak untuk ditempatkan pada meja pelanggan.'
+  },
+  {
+    icon: Utensils,
+    title: 'Manajemen Menu & Kategori',
+    description: 'Pengelola dapat menambah, mengubah harga, memperbarui foto, serta mengelompokkan menu berdasarkan kategori secara fleksibel.'
+  },
+  {
+    icon: Smartphone,
+    title: 'Antarmuka Responsif (Mobile-First)',
+    description: 'Halaman katalog publik dioptimalkan untuk berbagai ukuran layar smartphone pengunjung tanpa perlu mengunduh aplikasi tambahan.'
+  },
+  {
+    icon: RefreshCw,
+    title: 'Status Ketersediaan Real-Time',
+    description: 'Tandai menu yang sedang habis atau tersedia seketika agar pelanggan mendapatkan informasi yang selalu akurat.'
+  },
+  {
+    icon: BarChart3,
+    title: 'Pencatatan Riwayat Kunjungan',
+    description: 'Sistem mencatat statistik pemindaian QR Code dan halaman menu yang paling sering dibuka oleh pelanggan.'
+  },
+  {
+    icon: Shield,
+    title: 'Keamanan Data Berbasis Cloud',
+    description: 'Didukung basis data PostgreSQL dan Row Level Security untuk memastikan data setiap pengelola terisolasi dengan aman.'
+  }
 ]
 
 const steps = [
-  { num: '01', title: 'Daftar Gratis', desc: 'Buat akun dalam 30 detik dengan email Anda.' },
-  { num: '02', title: 'Buat Outlet', desc: 'Isi nama warung, alamat, dan upload logo.' },
-  { num: '03', title: 'Upload Menu', desc: 'Tambahkan item menu lengkap dengan foto & harga.' },
-  { num: '04', title: 'Sebar QR Code', desc: 'Download QR code dan tempel di meja pelanggan.' },
+  {
+    num: '01',
+    title: 'Pendaftaran Akun',
+    desc: 'Daftarkan akun pengelola menggunakan alamat email aktif untuk mengakses dashboard sistem.'
+  },
+  {
+    num: '02',
+    title: 'Konfigurasi Outlet',
+    desc: 'Lengkapi profil outlet mencakup nama restoran, deskripsi singkat, alamat, dan logo.'
+  },
+  {
+    num: '03',
+    title: 'Kelola Data Menu',
+    desc: 'Masukkan daftar makanan dan minuman lengkap dengan harga, foto, kategori, dan status stok.'
+  },
+  {
+    num: '04',
+    title: 'Cetak & Pasang QR Code',
+    desc: 'Unduh file QR Code dengan template yang tersedia, lalu cetak untuk dipasang pada meja makan.'
+  }
 ]
 
-const testimonials = [
+const systemValues = [
   {
-    name: 'Ibu Sari Dewi',
-    outlet: 'RM Padang Sari',
-    city: 'Padang, Sumbar',
-    initials: 'SD',
-    color: '#f97316',
-    stars: 5,
-    text: 'Pelanggan saya langsung senang bisa lihat menu lengkap dari HP. Sekarang nggak perlu cetak menu plastik lagi, hemat banget! Setup-nya mudah, nggak sampai 10 menit.',
+    icon: Layers,
+    title: 'Efisiensi Operasional',
+    desc: 'Mengurangi ketergantungan pada buku menu fisik konvensional serta meniadakan biaya cetak ulang setiap kali ada perubahan harga.'
   },
   {
-    name: 'Mas Andi Prasetyo',
-    outlet: 'Mie Ayam Bakso Andi',
-    city: 'Solo, Jawa Tengah',
-    initials: 'AP',
-    color: '#8b5cf6',
-    stars: 5,
-    text: 'Awalnya ragu karena nggak ngerti teknologi. Tapi ternyata gampang banget! Sekarang saya bisa update harga menu sendiri kapan aja, nggak perlu nunggu siapa-siapa.',
+    icon: Eye,
+    title: 'Akses Informasi Cepat',
+    desc: 'Pengunjung cukup mengarahkan kamera ponsel ke QR Code meja untuk membuka daftar menu lengkap beserta foto dan deskripsi.'
   },
   {
-    name: 'Kak Rizky Fauzan',
-    outlet: 'Kopi Kekinian RF',
-    city: 'Bandung, Jawa Barat',
-    initials: 'RF',
-    color: '#06b6d4',
-    stars: 5,
-    text: 'Sebagai kedai kopi kekinian, image itu penting banget. MenuQR bikin menu kita keliatan lebih profesional. Pelanggan sering foto QR code kita buat di-share ke story!',
-  },
-]
-
-const trustBadges = [
-  { icon: '🛡️', text: 'Gratis 1 Outlet Selamanya' },
-  { icon: '⚡', text: 'Setup 5 Menit' },
-  { icon: '💳', text: 'Tanpa Kartu Kredit' },
+    icon: SlidersHorizontal,
+    title: 'Kemudahan Pengelolaan',
+    desc: 'Seluruh operasional menu, dari penambahan item hingga pemantauan statistik kunjungan, dikendalikan dalam satu dashboard terpadu.'
+  }
 ]
 
 export default async function LandingPage() {
@@ -73,9 +94,9 @@ export default async function LandingPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', color: '#1e293b' }}>
 
-      {/* ─── JSON-LD FAQ Schema ─── */}
+      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}
@@ -86,29 +107,38 @@ export default async function LandingPage() {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        background: 'rgba(255,255,255,0.92)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #f3f4f6',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid #e2e8f0',
       }}>
         <div className="page-container" style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <QrCode size={18} color="white" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f97316', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <QrCode size={18} color="#ffffff" />
             </div>
-            <span style={{ fontSize: 18, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
               Menu<span style={{ color: '#f97316' }}>QR</span>
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Link href="#features" className="hidden sm:inline" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none', fontWeight: 500, marginRight: 8 }}>
+              Fitur
+            </Link>
+            <Link href="#pricing" className="hidden sm:inline" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none', fontWeight: 500, marginRight: 16 }}>
+              Paket
+            </Link>
             {user ? (
-              <Link href="/dashboard" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
-                Ke Dashboard
+              <Link href="/dashboard" className="btn btn-primary btn-sm" style={{ fontSize: 13.5, padding: '8px 16px' }}>
+                Buka Dashboard
               </Link>
             ) : (
               <>
-                <Link href="/login" className="btn btn-secondary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>Masuk</Link>
-                <Link href="/register" className="btn btn-primary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
-                  Daftar<span className="hidden sm:inline"> Gratis</span>
+                <Link href="/login" className="btn btn-secondary btn-sm" style={{ fontSize: 13.5, padding: '7px 14px' }}>
+                  Masuk
+                </Link>
+                <Link href="/register" className="btn btn-primary btn-sm" style={{ fontSize: 13.5, padding: '7px 16px' }}>
+                  Daftar Akun
                 </Link>
               </>
             )}
@@ -116,359 +146,292 @@ export default async function LandingPage() {
         </div>
       </nav>
 
-      {/* ─── Hero ─── */}
+      {/* ─── Hero Section ─── */}
       <section style={{
-        background: 'linear-gradient(160deg, #fff7ed 0%, #fffbf7 40%, #ffffff 100%)',
-        padding: '50px 0 60px',
-        overflow: 'hidden',
-        position: 'relative',
+        background: 'linear-gradient(180deg, #fafaf9 0%, #ffffff 100%)',
+        padding: '64px 0 48px',
+        borderBottom: '1px solid #f1f5f9'
       }}>
-        {/* Decorative blobs */}
-        <div className="hidden sm:block" style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.14) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div className="hidden sm:block" style={{ position: 'absolute', bottom: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-        <div className="page-container" style={{ textAlign: 'center', position: 'relative' }}>
-          {/* Badge */}
-          <div className="animate-fade-in" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: '#fff7ed', border: '1px solid #fed7aa',
-            borderRadius: 999, padding: '5px 12px',
-            fontSize: 12, fontWeight: 600, color: '#ea6c0a',
-            marginBottom: 20,
-          }}>
-            <Zap size={12} />
-            Gratis selamanya untuk 1 outlet
-          </div>
-
-          {/* Heading with stagger animation */}
-          <h1 className="animate-fade-in" style={{
-            fontSize: 'clamp(28px, 6vw, 56px)',
+        <div className="page-container" style={{ textAlign: 'center' }}>
+          
+          <h1 style={{
+            fontSize: 'clamp(30px, 5.5vw, 50px)',
             fontWeight: 800,
-            color: '#111827',
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-            marginBottom: 16,
-            maxWidth: 720,
-            margin: '0 auto 16px',
-            animationDelay: '0.1s',
+            color: '#0f172a',
+            lineHeight: 1.25,
+            letterSpacing: '-0.025em',
+            maxWidth: 780,
+            margin: '0 auto 18px',
           }}>
-            Menu Digital Modern<br />
-            <span style={{
-              background: 'linear-gradient(135deg, #f97316, #ea6c0a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>
-              untuk Warung Anda
-            </span>
+            Sistem Katalog Menu Digital Berbasis QR Code
           </h1>
 
-          <p className="animate-fade-in px-2" style={{
-            fontSize: 'clamp(14px, 4vw, 17px)', color: '#6b7280', maxWidth: 540,
-            margin: '0 auto 32px', lineHeight: 1.6,
-            animationDelay: '0.2s',
+          <p style={{
+            fontSize: 'clamp(15px, 2.5vw, 17px)',
+            color: '#475569',
+            maxWidth: 620,
+            margin: '0 auto 32px',
+            lineHeight: 1.65,
           }}>
-            Buat QR code menu digital dalam 5 menit. Pelanggan scan, langsung lihat menu cantik di HP mereka — tanpa install app apapun.
+            Aplikasi manajemen menu restoran untuk memperbarui daftar makanan, harga, dan ketersediaan stok secara terpusat. Pengunjung memindai QR Code untuk membuka menu tanpa instalasi aplikasi.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="animate-fade-in flex flex-col sm:flex-row gap-3 justify-center px-4" style={{ animationDelay: '0.3s', maxWidth: 420, margin: '0 auto' }}>
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
             {user ? (
-              <Link href="/dashboard" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
-                Ke Dashboard
+              <Link href="/dashboard" className="btn btn-primary btn-lg" style={{ padding: '12px 28px' }}>
+                Menuju Dashboard Pengelola
                 <ArrowRight size={18} />
               </Link>
             ) : (
               <>
-                <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
-                  Mulai Gratis Sekarang
+                <Link href="/register" id="cta-hero-register" className="btn btn-primary btn-lg" style={{ padding: '12px 26px' }}>
+                  Daftar Akun Pengelola
                   <ArrowRight size={18} />
                 </Link>
-                <Link href="/login" className="btn btn-secondary btn-lg w-full sm:w-auto" style={{ justifyContent: 'center' }}>
-                  Masuk ke Dashboard
+                <Link href="#features" className="btn btn-secondary btn-lg" style={{ padding: '12px 24px' }}>
+                  Pelajari Fitur
                 </Link>
               </>
             )}
           </div>
 
-          {/* Trust Badges */}
-          <div className="animate-fade-in flex flex-wrap gap-x-6 gap-y-2 justify-center mt-6" style={{ animationDelay: '0.4s' }}>
-            {trustBadges.map(badge => (
-              <div key={badge.text} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#6b7280' }}>
-                <span>{badge.icon}</span>
-                <span style={{ fontWeight: 500 }}>{badge.text}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Hero Mockup with floating animation (Hidden on mobile) */}
-          <div className="hero-float animate-fade-in hidden md:block" style={{
-            marginTop: 60,
+          {/* ─── Realistic UI Preview ─── */}
+          <div style={{
             background: '#ffffff',
-            borderRadius: 20,
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 24px 72px rgba(0,0,0,0.10), 0 4px 16px rgba(249,115,22,0.08)',
+            borderRadius: 16,
+            border: '1px solid #cbd5e1',
+            boxShadow: '0 16px 36px rgba(15, 23, 42, 0.06)',
             overflow: 'hidden',
-            maxWidth: 900,
-            margin: '60px auto 0',
-            animationDelay: '0.5s',
+            maxWidth: 960,
+            margin: '0 auto',
+            textAlign: 'left'
           }}>
-            {/* Browser chrome */}
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderBottom: '1px solid #e5e7eb', display: 'flex', gap: 6, alignItems: 'center' }}>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f87171' }} />
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#fbbf24' }} />
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#4ade80' }} />
-              <div style={{ flex: 1, marginLeft: 12, background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 6, padding: '4px 10px', fontSize: 12, color: '#9ca3af', textAlign: 'left' }}>
-                menuqr.vercel.app/dashboard
+            {/* Window titlebar */}
+            <div style={{ background: '#f8fafc', padding: '12px 16px', borderBottom: '1px solid #e2e8f0', display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#cbd5e1' }} />
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#cbd5e1' }} />
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#cbd5e1' }} />
+              <div style={{ flex: 1, marginLeft: 12, background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 6, padding: '4px 12px', fontSize: 12, color: '#64748b' }}>
+                menuqr.app/dashboard/menu
               </div>
             </div>
-            <div style={{ padding: 24, display: 'flex', gap: 24, minHeight: 300 }}>
-              {/* Sidebar mock */}
-              <div style={{ width: 160, flexShrink: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #ea6c0a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <QrCode size={14} color="white" />
-                  </div>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>MenuQR</span>
+
+            {/* Application Mock View */}
+            <div style={{ display: 'grid', gridTemplateColumns: '190px 1fr 210px', minHeight: 320, background: '#ffffff' }}>
+              
+              {/* Sidebar */}
+              <div style={{ borderRight: '1px solid #f1f5f9', padding: '16px 12px', background: '#fafaf9' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 16, paddingLeft: 8 }}>
+                  Panel Pengelola
                 </div>
-                {['Dashboard', 'Menu Saya', 'Kategori', 'QR Code', 'Pengaturan'].map((item, i) => (
-                  <div key={item} style={{
-                    padding: '7px 10px', borderRadius: 8, marginBottom: 2,
-                    background: i === 1 ? '#fff7ed' : 'transparent',
-                    color: i === 1 ? '#ea6c0a' : '#6b7280',
-                    fontSize: 13, fontWeight: i === 1 ? 600 : 400,
-                  }}>{item}</div>
-                ))}
-              </div>
-              {/* Content mock */}
-              <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, alignContent: 'start' }}>
                 {[
-                  { label: 'Total Menu', val: '24', color: '#f97316', bg: '#fff7ed' },
-                  { label: 'Tersedia', val: '20', color: '#16a34a', bg: '#f0fdf4' },
-                  { label: 'Kategori', val: '5', color: '#8b5cf6', bg: '#f5f3ff' },
-                ].map(s => (
-                  <div key={s.label} style={{ background: s.bg, borderRadius: 12, padding: 14, border: `1px solid ${s.color}22` }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
-                    <div style={{ fontSize: 11, color: '#9ca3af', fontWeight: 500 }}>{s.label}</div>
-                  </div>
+                  { label: 'Ringkasan', active: false },
+                  { label: 'Daftar Menu', active: true },
+                  { label: 'Kategori', active: false },
+                  { label: 'Cetak QR Code', active: false },
+                  { label: 'Pengaturan Outlet', active: false },
+                ].map(item => (
+                  <div key={item.label} style={{
+                    padding: '8px 10px', borderRadius: 6, marginBottom: 4,
+                    background: item.active ? '#fff7ed' : 'transparent',
+                    color: item.active ? '#ea6c0a' : '#64748b',
+                    fontSize: 13, fontWeight: item.active ? 700 : 500,
+                  }}>{item.label}</div>
                 ))}
-                {['Nasi Goreng Spesial', 'Mie Ayam Bakso', 'Es Teh Manis', 'Jus Alpukat'].map(name => (
-                  <div key={name} style={{ background: '#f9fafb', borderRadius: 10, padding: 10, border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #fed7aa, #fb923c)', flexShrink: 0 }} />
-                    <div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: '#374151' }}>{name}</div>
-                      <div style={{ fontSize: 10, color: '#f97316', fontWeight: 700 }}>Rp 15.000</div>
+              </div>
+
+              {/* Main Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <div>
+                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0 }}>Katalog Menu</h2>
+                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>Outlet: Restoran Kopi &amp; Kuliner</p>
+                  </div>
+                  <span style={{ fontSize: 12, background: '#f97316', color: '#ffffff', padding: '5px 12px', borderRadius: 6, fontWeight: 600 }}>
+                    + Tambah Menu
+                  </span>
+                </div>
+
+                {/* Filter category bar */}
+                <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                  <span style={{ fontSize: 11.5, background: '#0f172a', color: '#ffffff', padding: '4px 10px', borderRadius: 6, fontWeight: 600 }}>Semua (16)</span>
+                  <span style={{ fontSize: 11.5, background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: 6 }}>Makanan Utama</span>
+                  <span style={{ fontSize: 11.5, background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: 6 }}>Minuman</span>
+                  <span style={{ fontSize: 11.5, background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: 6 }}>Snack</span>
+                </div>
+
+                {/* Menu items list */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { name: 'Nasi Ayam Bakar Madu', cat: 'Makanan Utama', price: 'Rp 28.000', status: 'Tersedia', statusBg: '#f0fdf4', statusColor: '#16a34a' },
+                    { name: 'Kopi Susu Gula Aren', cat: 'Minuman', price: 'Rp 18.000', status: 'Tersedia', statusBg: '#f0fdf4', statusColor: '#16a34a' },
+                    { name: 'Roti Bakar Cokelat Keju', cat: 'Snack', price: 'Rp 16.000', status: 'Tersedia', statusBg: '#f0fdf4', statusColor: '#16a34a' },
+                    { name: 'Jus Mangga Harum Manis', cat: 'Minuman', price: 'Rp 15.000', status: 'Habis', statusBg: '#fef2f2', statusColor: '#ef4444' },
+                  ].map(m => (
+                    <div key={m.name} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8, padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{m.name}</div>
+                        <div style={{ fontSize: 11, color: '#64748b' }}>{m.cat}</div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#f97316' }}>{m.price}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, background: m.statusBg, color: m.statusColor, padding: '2px 8px', borderRadius: 4 }}>
+                          {m.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Social Proof Counter ─── */}
-      <section style={{ padding: '32px 0', borderTop: '1px solid #f3f4f6', borderBottom: '1px solid #f3f4f6', background: '#fafafa' }}>
-        <div className="page-container">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12 justify-center items-center">
-            {[
-              { value: 500, suffix: '+', label: 'Warung Aktif' },
-              { value: 12000, suffix: '+', label: 'Item Menu' },
-              { value: 98, suffix: '%', label: 'Puas' },
-            ].map(stat => (
-              <div key={stat.label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 900, color: '#f97316', lineHeight: 1 }}>
-                  <HeroCounter target={stat.value} suffix={stat.suffix} />
-                </div>
-                <div style={{ fontSize: 13, color: '#9ca3af', fontWeight: 500, marginTop: 4 }}>{stat.label}</div>
-              </div>
-            ))}
-            <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {['Warung Bu Ijah', 'RM Padang Jaya', 'Café Kita', 'Bakso Malang', 'Kedai Kopi'].map(name => (
-                <span key={name} style={{ fontSize: 13, fontWeight: 700, color: '#d1d5db' }}>{name}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Features ─── */}
-      <section id="features" style={{ padding: '80px 0' }}>
-        <div className="page-container">
-          <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
-              Semua yang kamu butuhkan
-            </h2>
-            <p style={{ fontSize: 16, color: '#6b7280', maxWidth: 480, margin: '0 auto' }}>
-              Dari daftar sampai QR code siap cetak, semuanya ada dalam satu platform.
-            </p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }} className="stagger">
-            {features.map(f => (
-              <div key={f.title} className="card card-hover animate-fade-in" style={{ padding: 24 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: f.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                  <f.icon size={24} color={f.color} />
-                </div>
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: '#111827', marginBottom: 8 }}>{f.title}</h3>
-                <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.6 }}>{f.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Testimonials ─── */}
-      <section style={{ padding: '80px 0', background: '#f8fafc' }}>
-        <div className="page-container">
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: '#fff7ed', border: '1px solid #fed7aa',
-              borderRadius: 999, padding: '5px 14px',
-              fontSize: 13, fontWeight: 600, color: '#ea6c0a', marginBottom: 14,
-            }}>
-              <Star size={13} fill="#f97316" />
-              4.9/5 rata-rata rating
-            </div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
-              Dipercaya Pemilik Warung<br />di Seluruh Indonesia
-            </h2>
-            <p style={{ fontSize: 16, color: '#6b7280' }}>
-              Lebih dari 500 UMKM sudah digitalkan menu mereka dengan MenuQR.
-            </p>
-          </div>
-
-          <div className="testimonial-grid">
-            {testimonials.map((t) => (
-              <div key={t.name} className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {/* Stars */}
-                <div style={{ display: 'flex', gap: 2 }}>
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <Star key={i} size={16} color="#f97316" fill="#f97316" />
                   ))}
                 </div>
+              </div>
 
-                {/* Text */}
-                <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.75, flex: 1 }}>
-                  &ldquo;{t.text}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${t.color}, ${t.color}bb)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 15, fontWeight: 800, color: '#ffffff', flexShrink: 0,
-                  }}>
-                    {t.initials}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: '#9ca3af' }}>{t.outlet} · {t.city}</div>
-                  </div>
-                  <div style={{
-                    marginLeft: 'auto', flexShrink: 0,
-                    background: '#f0fdf4', border: '1px solid #bbf7d0',
-                    borderRadius: 999, padding: '2px 10px',
-                    fontSize: 11, fontWeight: 600, color: '#16a34a',
-                  }}>
-                    ✓ Verified
+              {/* QR Preview Column */}
+              <div style={{ borderLeft: '1px solid #f1f5f9', padding: '16px', background: '#fafaf9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#334155', marginBottom: 12 }}>QR Code Meja</span>
+                <div style={{ border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px', background: '#ffffff', marginBottom: 10 }}>
+                  <div style={{ width: 100, height: 100, background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <QrCode size={84} color="#0f172a" />
                   </div>
                 </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#0f172a' }}>Meja Nomor 01</span>
+                <span style={{ fontSize: 11, color: '#64748b' }}>Pindai untuk membuka menu</span>
               </div>
-            ))}
+
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── How It Works ─── */}
-      <section style={{ padding: '80px 0' }}>
+      {/* ─── Features Section ─── */}
+      <section id="features" style={{ padding: '72px 0', background: '#ffffff' }}>
         <div className="page-container">
-          <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
-              Mulai dalam 4 langkah
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>
+              Fitur Utama Sistem
             </h2>
-            <p style={{ fontSize: 16, color: '#6b7280' }}>Tidak perlu skill teknis. Siapa pun bisa pakai.</p>
+            <p style={{ fontSize: 15, color: '#64748b', maxWidth: 520, margin: '0 auto' }}>
+              Modul fungsional yang dirancang untuk mendukung efisiensi pengelolaan menu restoran.
+            </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 24 }}>
-            {steps.map((step, i) => (
-              <div key={step.num} style={{ textAlign: 'center', position: 'relative' }}>
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: i === 0 ? 'linear-gradient(135deg, #f97316, #ea6c0a)' : '#ffffff',
-                  border: i === 0 ? 'none' : '2px solid #e5e7eb',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 16px',
-                  boxShadow: i === 0 ? '0 4px 16px rgba(249,115,22,0.35)' : 'none',
-                }}>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: i === 0 ? 'white' : '#f97316' }}>{step.num}</span>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+            {features.map(f => (
+              <div key={f.title} className="card" style={{ padding: 24, border: '1px solid #e2e8f0', background: '#ffffff' }}>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, color: '#ea6c0a' }}>
+                  <f.icon size={22} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', marginBottom: 8 }}>{step.title}</h3>
-                <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.6 }}>{step.desc}</p>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>{f.title}</h3>
+                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.6, margin: 0 }}>{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── Pricing ─── */}
-      <section id="pricing" style={{ padding: '80px 0', background: '#f8fafc' }}>
-        <div className="page-container" style={{ maxWidth: 640 }}>
+      {/* ─── Keunggulan Section ─── */}
+      <section style={{ padding: '72px 0', background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
+        <div className="page-container">
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>Harga Transparan</h2>
-            <p style={{ fontSize: 16, color: '#6b7280' }}>Mulai gratis, upgrade kapan mau.</p>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>
+              Manfaat Penerapan Sistem
+            </h2>
+            <p style={{ fontSize: 15, color: '#64748b', maxWidth: 540, margin: '0 auto' }}>
+              Keuntungan penggunaan katalog digital berbasis web dibandingkan metode konvensional.
+            </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+            {systemValues.map(v => (
+              <div key={v.title} className="card" style={{ padding: 26, background: '#ffffff', border: '1px solid #e2e8f0' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', marginBottom: 14 }}>
+                  <v.icon size={20} />
+                </div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>{v.title}</h3>
+                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.65, margin: 0 }}>{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Workflow Steps ─── */}
+      <section style={{ padding: '72px 0', background: '#ffffff' }}>
+        <div className="page-container">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>
+              Alur Kerja Penggunaan
+            </h2>
+            <p style={{ fontSize: 15, color: '#64748b', maxWidth: 480, margin: '0 auto' }}>
+              Tahapan implementasi sistem dari pendaftaran hingga pemindaian menu oleh pelanggan.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
+            {steps.map((step) => (
+              <div key={step.num} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '24px 20px', textAlign: 'left' }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: '#f97316', marginBottom: 10 }}>
+                  {step.num}
+                </div>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>{step.title}</h3>
+                <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Pricing Section ─── */}
+      <section id="pricing" style={{ padding: '72px 0', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+        <div className="page-container" style={{ maxWidth: 680 }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>Skema Layanan</h2>
+            <p style={{ fontSize: 15, color: '#64748b' }}>Pilihan paket penggunaan sistem sesuai kebutuhan skala outlet.</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
             {[
               {
-                name: 'Gratis',
+                name: 'Paket Standar',
                 price: 'Rp 0',
-                period: '/selamanya',
+                period: '/ gratis',
                 highlight: false,
                 features: [
-                  '1 outlet cabang aktif',
-                  'Maksimal 50 item menu makanan/minuman',
-                  'Desain QR Code standar (Minimalis)',
-                  'Halaman menu publik aktif & responsif'
+                  '1 outlet aktif',
+                  'Maksimal 50 item menu',
+                  'Template QR Code standar',
+                  'Katalog publik responsif'
                 ]
               },
               {
-                name: 'Pro',
-                price: 'Rp 49.000',
-                period: '/bulan',
+                name: 'Paket Pro',
+                price: 'Rp 18.000',
+                period: '/ bulan',
                 highlight: true,
                 features: [
-                  'Kelola hingga 5 outlet cabang aktif',
-                  'Upload menu makanan & minuman tanpa batas',
-                  'Desain QR Code premium (Colorful & Classic)',
-                  'Download file QR resolusi tinggi (1000px)',
-                  'Halaman menu publik aktif',
-                  'Domain kustom (misal: menu.warunganda.com)',
-                  'Grafik analitik pengunjung & performa menu',
-                  'Prioritas bantuan teknis langsung admin',
-                  'Integrasi WhatsApp Share instan'
+                  'Hingga 5 outlet cabang aktif',
+                  'Jumlah item menu tanpa batas',
+                  'Semua template QR Code (Minimalis, Colorful, Classic)',
+                  'Dashboard analitik kunjungan menu',
+                  'Prioritas dukungan teknis admin'
                 ]
               },
             ].map(plan => (
-              <div key={plan.name} className="card" style={{ padding: 28, border: plan.highlight ? '2px solid #f97316' : '1px solid #e5e7eb', position: 'relative', overflow: 'hidden' }}>
-                {plan.highlight && (
-                  <div style={{ position: 'absolute', top: 16, right: -24, background: '#f97316', color: 'white', fontSize: 11, fontWeight: 700, padding: '4px 32px', transform: 'rotate(45deg)' }}>POPULER</div>
-                )}
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#6b7280', marginBottom: 8 }}>{plan.name}</div>
+              <div key={plan.name} className="card" style={{ padding: 28, border: plan.highlight ? '2px solid #f97316' : '1px solid #e2e8f0', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: plan.highlight ? '#ea6c0a' : '#64748b', marginBottom: 8 }}>{plan.name}</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 20 }}>
-                  <span style={{ fontSize: 32, fontWeight: 800, color: '#111827' }}>{plan.price}</span>
-                  <span style={{ fontSize: 14, color: '#9ca3af' }}>{plan.period}</span>
+                  <span style={{ fontSize: 30, fontWeight: 800, color: '#0f172a' }}>{plan.price}</span>
+                  <span style={{ fontSize: 13, color: '#94a3b8' }}>{plan.period}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24, flex: 1 }}>
                   {plan.features.map(f => (
                     <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle2 size={16} color="#16a34a" style={{ flexShrink: 0, marginTop: 2 }} />
-                      <span style={{ fontSize: 13.5, color: '#374151', lineHeight: 1.4 }}>{f}</span>
+                      <span style={{ fontSize: 13, color: '#334155', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
-                <Link href="/register" id={`cta-pricing-${plan.name.toLowerCase()}`} className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%' }}>
-                  {plan.highlight ? 'Mulai Pro' : 'Mulai Gratis'}
+                <Link href="/register" className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%', textAlign: 'center', justifyContent: 'center' }}>
+                  {plan.highlight ? 'Pilih Paket Pro' : 'Daftar Gratis'}
                 </Link>
               </div>
             ))}
@@ -477,102 +440,74 @@ export default async function LandingPage() {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section id="faq" style={{ padding: '80px 0' }}>
+      <section id="faq" style={{ padding: '72px 0', background: '#ffffff', borderTop: '1px solid #e2e8f0' }}>
         <div className="page-container">
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: '#111827', marginBottom: 12 }}>
-              Pertanyaan yang Sering Ditanyakan
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>
+              Pertanyaan Umum
             </h2>
-            <p style={{ fontSize: 16, color: '#6b7280' }}>
-              Belum yakin? Temukan jawaban Anda di sini.
+            <p style={{ fontSize: 15, color: '#64748b' }}>
+              Informasi mengenai penggunaan dan fungsionalitas MenuQR.
             </p>
           </div>
           <FAQAccordion />
-          <div style={{ textAlign: 'center', marginTop: 36 }}>
-            <p style={{ fontSize: 14, color: '#9ca3af' }}>
-              Masih ada pertanyaan lain?{' '}
-              <a href="mailto:hello@menuqr.id" style={{ color: '#f97316', fontWeight: 600, textDecoration: 'none' }}>
-                Hubungi kami →
-              </a>
-            </p>
-          </div>
         </div>
       </section>
 
-      {/* ─── CTA ─── */}
-      <section style={{ padding: '80px 0', background: 'linear-gradient(135deg, #ea6c0a 0%, #f97316 50%, #fb923c 100%)' }}>
-        <div className="page-container" style={{ textAlign: 'center' }}>
-          <Globe size={40} color="rgba(255,255,255,0.7)" style={{ margin: '0 auto 20px' }} />
-          <h2 style={{ fontSize: 36, fontWeight: 800, color: '#ffffff', marginBottom: 16 }}>
-            Siap digitalkan warung Anda?
-          </h2>
-          <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.85)', marginBottom: 36 }}>
-            Bergabung dengan ribuan UMKM yang sudah pakai MenuQR.
-          </p>
-          <Link href="/register" id="cta-bottom-register" className="btn btn-lg" style={{ background: '#ffffff', color: '#ea6c0a', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
-            Daftar Gratis Sekarang
-            <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── Minimalist Elegant Footer ─── */}
-      <footer style={{ background: '#ffffff', borderTop: '1px solid #eaeaea', color: '#666666' }}>
-        <div className="page-container" style={{ paddingTop: '64px', paddingBottom: '32px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px', marginBottom: '64px' }}>
+      {/* ─── Footer ─── */}
+      <footer style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', color: '#64748b' }}>
+        <div className="page-container" style={{ paddingTop: '56px', paddingBottom: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', marginBottom: '48px' }}>
 
             {/* Brand Column */}
             <div className="footer-brand-column">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <QrCode size={20} color="#171717" />
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#171717', letterSpacing: '-0.02em' }}>
-                  MenuQR
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#f97316', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <QrCode size={16} color="#ffffff" />
+                </div>
+                <span style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
+                  Menu<span style={{ color: '#f97316' }}>QR</span>
                 </span>
               </div>
-              <p style={{ fontSize: '14px', lineHeight: 1.6, maxWidth: '280px', color: '#666666' }}>
-                Standard baru untuk menu digital warung dan restoran. Cepat, bersih, dan elegan.
+              <p style={{ fontSize: '13.5px', lineHeight: 1.6, maxWidth: '300px', color: '#64748b', margin: 0 }}>
+                Aplikasi katalog menu digital dan manajemen outlet berbasis web QR Code untuk mempermudah operasional usaha kuliner.
               </p>
             </div>
 
             {/* Links Columns */}
             <div>
-              <h4 style={{ color: '#171717', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>Produk</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '14px', marginBottom: '16px' }}>Produk</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <Link href="#pricing" className="footer-link-elegant">Harga</Link>
                 <Link href="#features" className="footer-link-elegant">Fitur</Link>
-                <Link href="/register" className="footer-link-elegant">Coba Gratis</Link>
+                <Link href="/register" className="footer-link-elegant">Daftar Akun</Link>
               </div>
             </div>
 
             <div>
-              <h4 style={{ color: '#171717', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>Dukungan</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '14px', marginBottom: '16px' }}>Dukungan</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <a href="mailto:hello@menuqr.id" className="footer-link-elegant">Hubungi Kami</a>
-                <Link href="/#faq" className="footer-link-elegant">Pusat Bantuan</Link>
+                <Link href="/#faq" className="footer-link-elegant">Pusat Bantuan (FAQ)</Link>
               </div>
             </div>
 
             <div>
-              <h4 style={{ color: '#171717', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>Legal</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <Link href="/privacy" className="footer-link-elegant">Privasi</Link>
-                <Link href="/terms" className="footer-link-elegant">Syarat & Ketentuan</Link>
+              <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '14px', marginBottom: '16px' }}>Legal</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <Link href="/privacy" className="footer-link-elegant">Kebijakan Privasi</Link>
+                <Link href="/terms" className="footer-link-elegant">Syarat &amp; Ketentuan</Link>
               </div>
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <div style={{ paddingTop: '24px', borderTop: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-            <p style={{ fontSize: '13px', color: '#888888' }}>
-              © {new Date().getFullYear()} MenuQR Inc. All rights reserved.
+          <div style={{ paddingTop: '24px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+            <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0 }}>
+              &copy; {new Date().getFullYear()} MenuQR. Sistem Manajemen Menu Digital.
             </p>
-            <div style={{ display: 'flex', gap: '24px' }}>
-              <a href="#" className="social-link-elegant" aria-label="Twitter">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-              </a>
-              <a href="#" className="social-link-elegant" aria-label="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              </a>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <span style={{ fontSize: '12px', color: '#94a3b8' }}>Versi 1.0</span>
             </div>
           </div>
         </div>

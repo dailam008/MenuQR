@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { BarChart } from '../components/BarChart'
 import UpgradeWall from '../components/UpgradeWall'
 import { usePlanLimit } from '@/hooks/usePlanLimit'
-import { BarChart3, Users, Eye, TrendingUp, Sparkles } from 'lucide-react'
+import { Users, Eye, QrCode, TrendingUp, TrendingDown, Calendar, Clock, BarChart2, Minus } from 'lucide-react'
+import Link from 'next/link'
 
 interface AnalyticsData {
   stats: {
@@ -23,32 +24,53 @@ interface AnalyticsData {
   }[]
   total_views: number
   total_today: number
+  total_this_week: number
+  total_last_week: number
+  total_this_month: number
+  peak_hour: { hour: number; count: number } | null
+  hourly_distribution: { hour: number; label: string; count: number }[]
 }
 
-// Mock data for free users to display a beautiful blurred background chart
-const mockAnalytics: AnalyticsData = {
-  stats: {
-    menu_count: 32,
-    available_count: 28,
-    category_count: 4,
-    outlet_count: 1
-  },
+const defaultEmptyAnalytics: AnalyticsData = {
+  stats: { menu_count: 0, available_count: 0, category_count: 0, outlet_count: 0 },
   views_per_day: [
-    { date: '1', label: 'Sen', count: 12 },
-    { date: '2', label: 'Sel', count: 19 },
-    { date: '3', label: 'Rab', count: 15 },
-    { date: '4', label: 'Kam', count: 32 },
-    { date: '5', label: 'Jum', count: 24 },
-    { date: '6', label: 'Sab', count: 48 },
-    { date: '7', label: 'Min', count: 56 }
+    { date: '', label: 'Sen', count: 0 },
+    { date: '', label: 'Sel', count: 0 },
+    { date: '', label: 'Rab', count: 0 },
+    { date: '', label: 'Kam', count: 0 },
+    { date: '', label: 'Jum', count: 0 },
+    { date: '', label: 'Sab', count: 0 },
+    { date: '', label: 'Min', count: 0 },
   ],
-  top_menus: [
-    { menu_item_id: '1', name: 'Nasi Goreng Spesial', image_url: null, price: 25000, view_count: 142 },
-    { menu_item_id: '2', name: 'Es Teh Manis', image_url: null, price: 5000, view_count: 98 },
-    { menu_item_id: '3', name: 'Ayam Bakar Madu', image_url: null, price: 28000, view_count: 76 }
-  ],
-  total_views: 389,
-  total_today: 56
+  top_menus: [],
+  total_views: 0,
+  total_today: 0,
+  total_this_week: 0,
+  total_last_week: 0,
+  total_this_month: 0,
+  peak_hour: null,
+  hourly_distribution: [],
+}
+
+function DeltaBadge({ current, previous }: { current: number; previous: number }) {
+  if (previous === 0 && current === 0) return <span style={{ fontSize: 11, color: '#94a3b8' }}>Belum ada data</span>
+  if (previous === 0) return <span style={{ fontSize: 11, color: '#16a34a', fontWeight: 700 }}>Baru</span>
+  const pct = Math.round(((current - previous) / previous) * 100)
+  if (pct > 0) return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#16a34a', fontWeight: 700 }}>
+      <TrendingUp size={12} /> +{pct}% vs minggu lalu
+    </span>
+  )
+  if (pct < 0) return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#ef4444', fontWeight: 700 }}>
+      <TrendingDown size={12} /> {pct}% vs minggu lalu
+    </span>
+  )
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#64748b', fontWeight: 700 }}>
+      <Minus size={12} /> Sama dengan minggu lalu
+    </span>
+  )
 }
 
 export default function AnalyticsPage() {
@@ -63,21 +85,18 @@ export default function AnalyticsPage() {
         if (res.ok) {
           const summary = await res.json()
           setData(summary)
+        } else {
+          setData(defaultEmptyAnalytics)
         }
       } catch (err) {
         console.error('Failed to load analytics data', err)
+        setData(defaultEmptyAnalytics)
       } finally {
         setLoading(false)
       }
     }
-
-    if (!limitLoading && isPro) {
-      fetchAnalytics()
-    } else if (!limitLoading) {
-      setData(mockAnalytics)
-      setLoading(false)
-    }
-  }, [isPro, limitLoading])
+    if (!limitLoading) fetchAnalytics()
+  }, [limitLoading])
 
   if (limitLoading || loading) {
     return (
@@ -87,107 +106,295 @@ export default function AnalyticsPage() {
     )
   }
 
-  const activeData = isPro ? (data || mockAnalytics) : mockAnalytics
-  const chartData = activeData.views_per_day.map(d => ({ label: d.label, value: d.count }))
+  const d = data || defaultEmptyAnalytics
+  const chartData = d.views_per_day.map(v => ({ label: v.label, value: v.count }))
+  const hasViews = d.total_views > 0 || d.total_this_month > 0
+
+  // Hourly chart — group into 6 time blocks
+  const timeBlocks = [
+    { label: 'Dini Hari\n00–05', hours: [0,1,2,3,4,5] },
+    { label: 'Pagi\n06–10', hours: [6,7,8,9,10] },
+    { label: 'Siang\n11–14', hours: [11,12,13,14] },
+    { label: 'Sore\n15–17', hours: [15,16,17] },
+    { label: 'Malam\n18–21', hours: [18,19,20,21] },
+    { label: 'Tengah\nMalam 22–23', hours: [22,23] },
+  ]
+  const hourlyBlockData = timeBlocks.map(block => ({
+    label: block.label.split('\n')[0],
+    sublabel: block.label.split('\n')[1],
+    value: block.hours.reduce((sum, h) => sum + (d.hourly_distribution.find(hd => hd.hour === h)?.count ?? 0), 0),
+  }))
+
+  const maxHourlyVal = Math.max(...hourlyBlockData.map(b => b.value), 1)
+
+  // Top menu total for percentage bar
+  const maxMenuViews = d.top_menus[0]?.view_count ?? 1
+
+  const formatHour = (h: number) => {
+    const suffix = h < 12 ? 'pagi' : h < 17 ? 'siang' : 'malam'
+    const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h
+    return `${h12}:00 ${suffix}`
+  }
 
   return (
     <div style={{ position: 'relative', width: '100%', minHeight: '80vh' }}>
-      
-      {/* Background Content (will be blurred if not Pro) */}
-      <div 
-        style={{
-          filter: isPro ? 'none' : 'blur(5px)',
-          pointerEvents: isPro ? 'auto' : 'none',
-          userSelect: isPro ? 'auto' : 'none',
-          transition: 'filter 0.3s'
-        }}
-      >
+
+      {/* ── Blurred content for non-Pro ────────────────────────────────── */}
+      <div style={{
+        filter: isPro ? 'none' : 'blur(5px)',
+        pointerEvents: isPro ? 'auto' : 'none',
+        userSelect: isPro ? 'auto' : 'none',
+        transition: 'filter 0.3s',
+      }}>
+        {/* Header */}
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#111827', marginBottom: 4 }}>Analitik Menu</h1>
-          <p style={{ color: '#6b7280', fontSize: 14 }}>Pantau statistik scan QR dan menu terfavorit Anda.</p>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0f172a', marginBottom: 4 }}>Analitik Menu</h1>
+          <p style={{ color: '#64748b', fontSize: 14 }}>
+            Pantau statistik kunjungan, tren pemindaian QR Code, dan performa katalog menu Anda.
+          </p>
         </div>
 
-        {/* Stats Grid */}
+        {/* ── Empty State (no views yet) ────────────────────────────── */}
+        {!hasViews && isPro && (
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '20px 24px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <QrCode size={20} color="#f97316" />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', margin: 0 }}>Belum ada data kunjungan</p>
+                <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>Cetak QR Code dan letakkan di meja pelanggan untuk mulai mencatat statistik kunjungan.</p>
+              </div>
+            </div>
+            <Link href="/dashboard/qr" className="btn btn-secondary btn-sm" style={{ fontSize: 13 }}>
+              Buat QR Code
+            </Link>
+          </div>
+        )}
+
+        {/* ── KPI Cards Row ─────────────────────────────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-          <div className="card" style={{ padding: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>Total Kunjungan Menu</span>
-              <Eye size={18} color="#f97316" />
+          
+          {/* Today */}
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Kunjungan Hari Ini</span>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Eye size={15} color="#f97316" />
+              </div>
             </div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#1e293b' }}>
-              {activeData.total_views}
+            <div style={{ fontSize: 30, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{d.total_today}</div>
+            <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>Scan QR hari ini</div>
+          </div>
+
+          {/* This Week vs Last Week */}
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Minggu Ini</span>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <TrendingUp size={15} color="#16a34a" />
+              </div>
             </div>
-            <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
-              Scan QR akumulatif 7 hari terakhir
+            <div style={{ fontSize: 30, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{d.total_this_week}</div>
+            <div style={{ marginTop: 6 }}>
+              <DeltaBadge current={d.total_this_week} previous={d.total_last_week} />
             </div>
           </div>
 
-          <div className="card" style={{ padding: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>Kunjungan Hari Ini</span>
-              <Users size={18} color="#16a34a" />
+          {/* This Month */}
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Bulan Ini</span>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Calendar size={15} color="#3b82f6" />
+              </div>
             </div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#1e293b' }}>
-              {activeData.total_today || activeData.total_views ? Math.round(activeData.total_views * 0.15) : 0}
+            <div style={{ fontSize: 30, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{d.total_this_month}</div>
+            <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>Kunjungan bulan berjalan</div>
+          </div>
+
+          {/* Peak Hour */}
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Jam Tersibuk</span>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fdf4ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Clock size={15} color="#a855f7" />
+              </div>
             </div>
-            <div style={{ fontSize: 11, color: '#16a34a', marginTop: 4, fontWeight: 600 }}>
-              ⚡ Real-time updates
+            {d.peak_hour ? (
+              <>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>
+                  {formatHour(d.peak_hour.hour)}
+                </div>
+                <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>
+                  {d.peak_hour.count} kunjungan di jam ini
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 20, fontWeight: 800, color: '#94a3b8', lineHeight: 1 }}>—</div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>Belum ada data</div>
+              </>
+            )}
+          </div>
+
+          {/* Outlet Stats */}
+          <div className="card" style={{ padding: '18px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Katalog Menu</span>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Users size={15} color="#64748b" />
+              </div>
             </div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{d.stats.available_count}<span style={{ fontSize: 14, color: '#64748b', fontWeight: 500 }}>/{d.stats.menu_count}</span></div>
+            <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>Item tersedia / total</div>
           </div>
         </div>
 
-        {/* Chart Card */}
-        <div className="card" style={{ padding: 24, marginBottom: 24 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1e293b', marginBottom: 16 }}>Grafik Kunjungan Harian (7 Hari Terakhir)</h3>
-          <BarChart data={chartData} />
-        </div>
+        {/* ── 2-Column Grid: Daily Chart + Hourly Distribution ─────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginBottom: 20 }}>
 
-        {/* Top Items Table */}
-        <div className="card" style={{ padding: 24 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1e293b', marginBottom: 16 }}>3 Menu Terfavorit (Sering Dilihat)</h3>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid #e2e8f0', textAlign: 'left', color: '#64748b' }}>
-                  <th style={{ padding: '10px 12px', fontWeight: 600 }}>Menu</th>
-                  <th style={{ padding: '10px 12px', fontWeight: 600 }}>Harga</th>
-                  <th style={{ padding: '10px 12px', fontWeight: 600, textAlign: 'right' }}>Total Dilihat</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeData.top_menus.map((item, idx) => (
-                  <tr key={item.menu_item_id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px', fontWeight: 600, color: '#334155' }}>
-                      {idx === 0 ? '🥇 ' : idx === 1 ? '🥈 ' : '🥉 '}
-                      {item.name}
-                    </td>
-                    <td style={{ padding: '12px', color: '#64748b' }}>
-                      Rp {item.price.toLocaleString('id-ID')}
-                    </td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#f97316' }}>
-                      {item.view_count} kali
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Daily Chart (7 days) */}
+          <div className="card" style={{ padding: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>Kunjungan 7 Hari Terakhir</h3>
+                <p style={{ fontSize: 12, color: '#64748b', margin: '2px 0 0' }}>Total pemindaian QR Code per hari</p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f8fafc', padding: '4px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                <BarChart2 size={13} color="#f97316" />
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#475569' }}>7 Hari</span>
+              </div>
+            </div>
+            <BarChart data={chartData} />
+          </div>
+
+          {/* Hourly Distribution */}
+          <div className="card" style={{ padding: 24 }}>
+            <div style={{ marginBottom: 20 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>Distribusi Waktu Kunjungan</h3>
+              <p style={{ fontSize: 12, color: '#64748b', margin: '2px 0 0' }}>Pola jam ramai pelanggan (30 hari terakhir)</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {hourlyBlockData.map((block, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 80, fontSize: 11, color: '#475569', fontWeight: 600, flexShrink: 0, lineHeight: 1.3 }}>
+                    {block.label}
+                    <br />
+                    <span style={{ fontSize: 10, color: '#94a3b8', fontWeight: 400 }}>{block.sublabel}</span>
+                  </div>
+                  <div style={{ flex: 1, height: 14, background: '#f1f5f9', borderRadius: 8, overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${(block.value / maxHourlyVal) * 100}%`,
+                      background: block.value === maxHourlyVal
+                        ? 'linear-gradient(90deg, #f97316, #ea6c0a)'
+                        : '#cbd5e1',
+                      borderRadius: 8,
+                      transition: 'width 0.4s ease',
+                      minWidth: block.value > 0 ? 4 : 0,
+                    }} />
+                  </div>
+                  <div style={{ width: 28, fontSize: 12, fontWeight: 700, color: block.value === maxHourlyVal ? '#f97316' : '#64748b', textAlign: 'right', flexShrink: 0 }}>
+                    {block.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {d.peak_hour && (
+              <div style={{ marginTop: 14, padding: '8px 12px', background: '#fff7ed', borderRadius: 8, border: '1px solid #fed7aa' }}>
+                <span style={{ fontSize: 12, color: '#9a3412', fontWeight: 600 }}>
+                  Pelanggan paling ramai datang pada {formatHour(d.peak_hour.hour)}
+                </span>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* ── Top Menu Items ────────────────────────────────────────── */}
+        <div className="card" style={{ padding: 24, marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>Menu Paling Sering Dilihat</h3>
+              <p style={{ fontSize: 12, color: '#64748b', margin: '2px 0 0' }}>Berdasarkan interaksi pelanggan dalam 7 hari terakhir</p>
+            </div>
+          </div>
+
+          {d.top_menus.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '28px 0', color: '#94a3b8', fontSize: 13.5 }}>
+              Belum ada data interaksi menu yang tercatat.
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {d.top_menus.map((item, idx) => {
+                const pct = Math.round((item.view_count / maxMenuViews) * 100)
+                const medals = ['🥇', '🥈', '🥉', '4', '5']
+                return (
+                  <div key={item.menu_item_id}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+                      <span style={{ fontSize: idx < 3 ? 18 : 13, fontWeight: 800, width: 24, textAlign: 'center', flexShrink: 0 }}>
+                        {medals[idx]}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: 13.5, fontWeight: 700, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.name}
+                          </span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: '#f97316', flexShrink: 0, marginLeft: 8 }}>
+                            {item.view_count}x dilihat
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: '#64748b', marginTop: 1 }}>
+                          Rp {item.price.toLocaleString('id-ID')}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    <div style={{ marginLeft: 36, height: 6, background: '#f1f5f9', borderRadius: 4, overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${pct}%`,
+                        background: idx === 0
+                          ? 'linear-gradient(90deg, #f97316, #ea6c0a)'
+                          : idx === 1
+                          ? '#fb923c'
+                          : '#fdba74',
+                        borderRadius: 4,
+                        transition: 'width 0.4s ease',
+                      }} />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Summary Stats Row ─────────────────────────────────────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14 }}>
+          {[
+            { label: 'Total Menu', value: d.stats.menu_count, sub: 'item terdaftar' },
+            { label: 'Menu Tersedia', value: d.stats.available_count, sub: 'siap dipesan' },
+            { label: 'Kategori', value: d.stats.category_count, sub: 'kelompok menu' },
+            { label: 'Outlet Aktif', value: d.stats.outlet_count, sub: 'outlet Anda' },
+          ].map(stat => (
+            <div key={stat.label} className="card" style={{ padding: '16px 20px', textAlign: 'center' }}>
+              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 6 }}>{stat.label}</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: '#0f172a' }}>{stat.value}</div>
+              <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 2 }}>{stat.sub}</div>
+            </div>
+          ))}
+        </div>
+
       </div>
 
-      {/* Upgrade Wall Overlay (if not Pro) */}
+      {/* ── Upgrade Wall Overlay ──────────────────────────────────────── */}
       {!isPro && (
-        <div 
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10,
-            padding: '24px 16px'
-          }}
-        >
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 10, padding: '24px 16px',
+        }}>
           <div style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.12)', borderRadius: 24 }}>
             <UpgradeWall feature="analytics" />
           </div>

@@ -27,12 +27,13 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1'
   const { pathname } = request.nextUrl
 
-  // 1. Rate Limiting Checks
-  
-  // Auth routes limit: max 5 req/minute
-  if (pathname === '/login' || pathname === '/register') {
-    if (isRateLimited(ip, 5, 60 * 1000, 'auth')) {
-      return new NextResponse('Too Many Requests. Batas login/register adalah 5 kali per menit.', {
+  // 1. Rate Limiting Checks (Skip or use high limit in development / GET page visits)
+  const isDev = process.env.NODE_ENV === 'development' || ip === '127.0.0.1' || ip === '::1'
+
+  // Auth routes limit: max 60 req/minute on dev, 20 on prod
+  if (!isDev && (pathname === '/login' || pathname === '/register')) {
+    if (isRateLimited(ip, 20, 60 * 1000, 'auth')) {
+      return new NextResponse('Too Many Requests. Silakan tunggu beberapa saat sebelum mencoba kembali.', {
         status: 429,
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
@@ -42,10 +43,10 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Image Upload limit: max 10 req/minute
+  // Image Upload limit: max 30 req/minute
   if (pathname.startsWith('/api/upload')) {
-    if (isRateLimited(ip, 10, 60 * 1000, 'upload')) {
-      return new NextResponse('Too Many Requests. Batas unggahan foto adalah 10 kali per menit.', {
+    if (isRateLimited(ip, 30, 60 * 1000, 'upload')) {
+      return new NextResponse('Batas unggahan foto tercapai. Silakan tunggu beberapa saat.', {
         status: 429,
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
@@ -55,9 +56,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Global rate limit: max 100 req/minute
-  if (isRateLimited(ip, 100, 60 * 1000, 'global')) {
-    return new NextResponse('Too Many Requests. Akses global dibatasi 100 kali per menit.', {
+  // Global rate limit: max 300 req/minute on prod
+  if (!isDev && isRateLimited(ip, 300, 60 * 1000, 'global')) {
+    return new NextResponse('Akses dibatasi sementara karena terlalu banyak permintaan.', {
       status: 429,
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
